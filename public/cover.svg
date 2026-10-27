@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Sherlock: Shadows of London</title>
+  <desc id="desc">A foggy Victorian London skyline, a sealed letter, and a gas lamp for the multiplayer mystery The Letter That Shouldn’t Exist.</desc>
+  <defs>
+    <linearGradient id="sky" x2="1" y2="1"><stop stop-color="#101920"/><stop offset=".58" stop-color="#1b272d"/><stop offset="1" stop-color="#111a20"/></linearGradient>
+    <radialGradient id="lamp"><stop stop-color="#e9bb72" stop-opacity=".44"/><stop offset="1" stop-color="#e9bb72" stop-opacity="0"/></radialGradient>
+    <linearGradient id="paper" x2=".9" y2="1"><stop stop-color="#e3d3ae"/><stop offset="1" stop-color="#ad956d"/></linearGradient>
+    <filter id="fog"><feGaussianBlur stdDeviation="25"/></filter>
+    <pattern id="grain" width="92" height="92" patternUnits="userSpaceOnUse"><circle cx="8" cy="11" r="1" fill="#d8c7a3" opacity=".13"/><circle cx="53" cy="74" r="1" fill="#d8c7a3" opacity=".1"/><path d="M19 43h18M70 22h11" stroke="#d8c7a3" opacity=".06"/></pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#sky)"/>
+  <rect width="1200" height="630" fill="url(#grain)"/>
+  <path d="M0 405 78 350l38 18 70-70 62 42 75-92 63 56 89-77 50 51 82-39 53 44 71-80 54 53 82-43 66 38 92-73 72 57 67-22v387H0z" fill="#202b2e" opacity=".72"/>
+  <g fill="#11191e" stroke="#7d816f" stroke-opacity=".19" stroke-width="2">
+    <path d="M0 340h91v-54h25v54h28v-82h33v82h54v-72h31v72h30v-44h17v44h54v-118h19v-27h13v27h20v118h58v-68h37v68h35V305h21v-66h15v66h32v-48h30v48h40v-96h22v-25h11v25h28v96h39v-60h39v60h30v-38h28v38h46v-92h32v92h29v-58h34v58h53v-44h38v44h35v-72h29v72h49v290H0z"/>
+  </g>
+  <g fill="#d5af70" opacity=".34">
+    <path d="M99 316h5v8h-5zm84-36h6v9h-6zm87 19h5v9h-5zm219-76h5v10h-5zm142 86h5v10h-5zm153-82h5v9h-5zm155 57h6v9h-6zm89-17h5v8h-5zm105 53h5v9h-5z"/>
+  </g>
+  <path d="M0 419c180-42 238 44 385 3s218-14 365 11 245 21 450-20" fill="none" stroke="#91a4a0" stroke-opacity=".13" stroke-width="3" filter="url(#fog)"/>
+  <ellipse cx="1003" cy="291" rx="205" ry="218" fill="url(#lamp)"/>
+  <g fill="none" stroke="#d5b477" stroke-opacity=".31" stroke-width="2">
+    <path d="M887 78h246v474H887z"/><path d="M899 90h222v450H899z"/>
+  </g>
+  <g transform="translate(1000 238)" fill="none" stroke="#d5b477" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-54 181h108M-34 180l15-80h38l15 80M-45 181v26m90-26v26M-64 207h128M-28 99V71h56v28M-21 71V43h42v28M-29 43h58l-8-15h-42z"/>
+    <path d="M-17 24c-3-15 4-29 17-29s20 14 17 29z" fill="#d5a65e" fill-opacity=".19"/>
+    <path d="M0-23v-25m-13 0h26"/>
+  </g>
+  <path d="M764 295 902 375M742 337 897 391M781 263 902 351" fill="none" stroke="#d4b476" stroke-opacity=".22" stroke-width="2" stroke-dasharray="7 11"/>
+  <g transform="translate(804 335) rotate(-10)">
+    <path d="M0 0h190v138H0z" fill="url(#paper)" stroke="#f0dfba" stroke-opacity=".55" stroke-width="2"/>
+    <text x="13" y="24" fill="#675b43" font-family="monospace" font-size="8" letter-spacing="1.2">221B BAKER STREET</text>
+    <path d="M13 30h163" stroke="#867452" stroke-opacity=".55"/>
+    <path d="m2 4 93 71 93-71M2 134l63-55m123 55L125 79" fill="none" stroke="#776849" stroke-opacity=".62" stroke-width="3"/>
+    <circle cx="96" cy="91" r="22" fill="#763d34" stroke="#b86450" stroke-width="3"/>
+    <text x="96" y="96" text-anchor="middle" fill="#f0d49d" font-family="Georgia, serif" font-size="12" font-weight="bold">SH</text>
+  </g>
+  <g transform="translate(1080 451) rotate(-18)" fill="none" stroke="#e3c48a" stroke-width="4" stroke-linecap="round">
+    <circle cx="0" cy="0" r="27" fill="#111a20" fill-opacity=".34"/>
+    <circle cx="0" cy="0" r="21" stroke-opacity=".52" stroke-width="1.5"/>
+    <path d="M19 19 53 54" stroke-width="7"/>
+    <path d="M-12 0h24M0-12v24" stroke-opacity=".38" stroke-width="1"/>
+  </g>
+  <g transform="translate(1014 510) rotate(-7)" fill="none" stroke="#c5975e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 0h52M48 0c0 15-7 19-8 27s5 13 17 12 16-10 10-18L57 7M58 37h12"/>
+    <path d="M62-4c-11-13 7-16 0-28m14 27c-8-11 6-14 2-22" stroke-opacity=".45" stroke-width="2"/>
+  </g>
+  <rect x="47" y="39" width="1106" height="552" fill="none" stroke="#d3b47c" stroke-opacity=".33" stroke-width="2"/>
+  <rect x="57" y="49" width="1086" height="532" fill="none" stroke="#d3b47c" stroke-opacity=".1"/>
+  <g font-family="Georgia, 'Times New Roman', serif">
+    <text x="92" y="112" fill="#c7b58d" font-family="monospace" font-size="13" letter-spacing="3.2">A SHERLOCK HOLMES MYSTERY · 4–8 PLAYERS</text>
+    <text x="86" y="233" fill="#ece4d4" font-size="87" letter-spacing="-3">Sherlock:</text>
+    <text x="88" y="321" fill="#dfba79" font-size="57" font-style="italic" letter-spacing="-1">Shadows of London</text>
+    <path d="M92 354h345" stroke="#cda86d" stroke-opacity=".6"/>
+    <text x="94" y="397" fill="#d0c5ad" font-family="monospace" font-size="13" letter-spacing="2">THE LETTER THAT SHOULDN’T EXIST</text>
+    <text x="94" y="430" fill="#8f9892" font-family="monospace" font-size="11" letter-spacing="2">221B BAKER STREET · SCOTLAND YARD · 1891</text>
+    <text x="95" y="528" fill="#d4b477" font-family="monospace" font-size="11" letter-spacing="3">INVESTIGATE  /  REUNITE  /  ACCUSE</text>
+  </g>
+  <circle cx="1113" cy="73" r="17" fill="#151e23" stroke="#d3b47c" stroke-opacity=".48"/>
+  <text x="1113" y="77" text-anchor="middle" fill="#e1c58f" font-family="Georgia, serif" font-size="9" font-weight="bold">SH</text>
+</svg>

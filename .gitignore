@@ -1,0 +1,8 @@
+# Local build artifacts
+.vercel
+.netlify
+.netlify-local
+node_modules
+.appdata
+.env*
+!.env.example

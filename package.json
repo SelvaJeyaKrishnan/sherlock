@@ -1,0 +1,19 @@
+{
+  "name": "sherlock-shadows-of-london",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:site": "node scripts/build-site.mjs",
+    "dev": "vercel dev",
+    "dev:local": "node server.mjs",
+    "deploy:preview": "vercel",
+    "deploy:production": "vercel --prod",
+    "test:game": "node scripts/test-three-rounds.mjs && node scripts/test-full-game.mjs && node scripts/test-vercel-handler.mjs",
+    "test:room-cap": "node scripts/test-room-cap.mjs",
+    "build": "node scripts/build-site.mjs"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

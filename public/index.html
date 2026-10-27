@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080e15">
+  <meta name="description" content="Join a Sherlock Holmes mystery for 2–8 players. Solve together with 2–3 players or hunt the hidden culprit with a larger group.">
+  <link rel="icon" href="/cover.svg" type="image/svg+xml">
+  <title>Sherlock: Shadows of London</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main id="landing" class="landing">
+    <div class="landing__grain" aria-hidden="true"></div>
+    <header class="brand"><span class="brand__mark">S</span><span>SHERLOCK HOLMES · 221B BAKER STREET</span><span class="brand__rule"></span><span>CASE 001</span></header>
+    <section class="hero">
+      <p class="eyebrow">A SHERLOCK HOLMES MYSTERY · 2–8 PLAYERS</p>
+      <h1>Sherlock:<br><em>Shadows of London</em></h1>
+      <p class="hero__intro">A forged letter sends Holmes’s team into fogbound London. With two or three players, everyone is a detective. With four or more, one player is secretly the culprit.</p>
+      <div class="case-stamp"><span>THE BAKER STREET CASEBOOK · NO. 001</span><strong>THE LETTER THAT<br>SHOULDN’T EXIST</strong><span>221B BAKER STREET → SCOTLAND YARD · 1891</span></div>
+    </section>
+    <section class="entry-card" aria-label="Join or create a game">
+      <label for="player-name">YOUR DETECTIVE NAME</label>
+      <input id="player-name" maxlength="18" autocomplete="nickname" placeholder="e.g. Miss Adler">
+      <div class="entry-card__buttons">
+        <button id="create-room" class="button button--gold">Create a room <span aria-hidden="true">↗</span></button>
+        <div class="join-row"><input id="room-code" maxlength="6" aria-label="Room code" placeholder="ROOM CODE" autocomplete="off"><button id="join-room" class="button button--outline">Join</button></div>
+      </div>
+      <p id="landing-error" class="error" role="alert" aria-live="polite"></p>
+      <p class="entry-note">2–3: solve together · 4–8: find the culprit · 3 rounds</p>
+    </section>
+    <footer class="landing-footer"><span>OBSERVE · DEDUCE · ACCUSE</span><span>THE CASES OF SHERLOCK HOLMES</span></footer>
+  </main>
+
+  <main id="game" class="game hidden">
+    <header class="topbar">
+      <a class="topbar__brand" href="/" id="leave-game"><span class="brand__mark brand__mark--small">S</span><span>221B · SHERLOCK HOLMES</span></a>
+      <div class="topbar__case"><span class="topbar__dot"></span> BAKER STREET CASEBOOK <span class="topbar__slash">/</span> THE LETTER THAT SHOULDN’T EXIST</div>
+      <button id="copy-code" class="room-chip" title="Copy room code"><span>ROOM</span><strong id="room-code-display">------</strong><span class="copy-icon">▣</span></button>
+    </header>
+    <div class="game-grid">
+      <section class="map-panel" aria-label="London map">
+        <div class="map-heading">
+          <div><p class="eyebrow">A FOGBOUND DISTRICT</p><h2 id="map-title">Waiting Room</h2></div>
+          <div id="player-count" class="player-count">0 / 8 PLAYERS</div>
+        </div>
+        <div class="map-wrap"><canvas id="map" aria-label="Map showing locations, mission stations, and players"></canvas><div id="map-toast" class="map-toast" aria-live="polite"></div></div>
+        <div class="map-legend"><span><i class="legend-dot legend-dot--you"></i> YOU</span><span><i class="legend-dot legend-dot--detective"></i> DETECTIVE</span><span><i class="legend-dot legend-dot--unknown"></i> UNKNOWN ROLE</span><span class="map-legend__hint">WASD / ARROWS TO MOVE</span></div>
+        <div class="controls-row">
+          <div class="dpad" aria-label="Touch movement controls">
+            <button class="dpad__up" data-dir="up" aria-label="Move north">▲</button>
+            <button class="dpad__left" data-dir="left" aria-label="Move west">◀</button>
+            <button class="dpad__down" data-dir="down" aria-label="Move south">▼</button>
+            <button class="dpad__right" data-dir="right" aria-label="Move east">▶</button>
+          </div>
+          <div class="control-prompt"><span class="keycap">E</span><span id="interaction-hint">Stand near a marked station to investigate.</span></div>
+          <button id="interact" class="button button--interact" disabled><span>◎</span> Investigate</button>
+          <button id="role-action" class="button button--danger hidden" disabled>Interfere</button>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <section id="phase-card" class="panel-card phase-card">
+          <div class="panel-card__head"><p class="eyebrow">HOLMES’S CASE</p><span id="round-counter" class="count-chip">ROUND 1 / 3</span><span id="phase-pill" class="phase-pill">WAITING</span></div>
+          <h2 id="phase-title">The waiting room</h2>
+          <p id="phase-copy">Everyone marks ready. The case begins when all connected players are ready.</p>
+          <div id="role-card" class="role-card hidden"><span id="role-kicker" class="eyebrow">PRIVATE ROLE</span><strong id="role-name">DETECTIVE</strong><p id="role-secret"></p></div>
+          <button id="start-game" class="button button--gold button--full hidden" aria-pressed="false">I’m ready <span>→</span></button>
+          <p id="start-hint" class="start-hint" aria-live="polite"></p>
+        </section>
+
+        <section class="panel-card objective-card">
+          <div class="panel-card__head"><p class="eyebrow">YOUR NEXT LEAD</p><span id="objective-icon" class="objective-icon">✧</span></div>
+          <h3 id="objective-title">Gather the team</h3>
+          <p id="objective-copy">Invite one or more friends to join the case.</p>
+          <div id="mission-list" class="mission-list hidden"></div>
+        </section>
+
+        <section class="panel-card journal-card">
+          <div class="panel-card__head"><p class="eyebrow">WATSON’S CASEBOOK</p><span id="clue-count" class="count-chip">0 CLUES</span></div>
+          <div id="clue-list" class="clue-list"><p class="empty-note">No evidence yet. The team’s findings will appear here.</p></div>
+        </section>
+
+        <section class="panel-card team-card">
+          <div class="panel-card__head"><p class="eyebrow">THE CONSULTING DETECTIVES</p><span id="team-summary" class="count-chip">0 IN ROOM</span></div>
+          <div id="team-list" class="team-list"></div>
+        </section>
+
+        <section id="vote-card" class="panel-card vote-card hidden">
+          <div class="panel-card__head"><p class="eyebrow">COMPARE SUSPICIONS</p><span class="vote-sigil">§</span></div>
+          <p id="vote-copy">Two clues are on the board. Cast one investigation vote.</p>
+          <div class="vote-row"><select id="vote-target" aria-label="Choose an investigation suspect"></select><button id="vote-submit" class="button button--outline">Vote</button></div>
+          <p id="vote-result" class="vote-result"></p>
+        </section>
+
+        <section id="result-card" class="panel-card result-card hidden">
+          <div class="panel-card__head"><p class="eyebrow">CASE CLOSED</p><span id="result-stamp" class="result-stamp">SOLVED</span></div>
+          <h2 id="result-title">The truth comes to light.</h2>
+          <p id="result-copy"></p>
+          <p id="result-truth" class="result-truth"></p>
+          <p id="round-score" class="round-score"></p>
+          <ol id="scoreboard" class="scoreboard" aria-label="Tournament scoreboard"></ol>
+          <button id="rematch" class="button button--gold button--full hidden">Next round <span>→</span></button>
+        </section>
+      </aside>
+    </div>
+    <footer class="bottom-drawer">
+      <div class="story-log"><div class="panel-card__head"><p class="eyebrow">BAKER STREET TELEGRAMS</p><span id="connection-state" class="connection-state">CONNECTING</span></div><div id="event-list" class="event-list" aria-live="polite"></div></div>
+      <form id="chat-form" class="chat-form"><label for="chat-input" class="eyebrow">SEND A TELEGRAM TO THE DETECTIVES</label><div class="chat-form__row"><input id="chat-input" maxlength="180" placeholder="Share your deduction…" autocomplete="off"><button class="button button--outline" type="submit" aria-label="Send message">Send ↗</button></div><div id="chat-list" class="chat-list" aria-live="polite"></div></form>
+    </footer>
+    <div id="game-error" class="game-error" role="alert" aria-live="polite"></div>
+  </main>
+
+  <div id="tutorial" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+    <div class="modal-card"><button id="tutorial-close" class="modal-close" aria-label="Close tutorial">×</button><p class="eyebrow">YOUR FIRST MINUTE · 221B FIELD NOTES</p><h2 id="tutorial-title">A detective’s field guide</h2><ol><li><b>Move</b> around London with WASD, arrow keys, or the touch pad.</li><li><b>Follow the clues</b>: compare the letter, decode the cipher, then repair the telegraph.</li><li><b>Know your case</b>: with 2–3 players, everyone is a detective. With 4–8, one player is secretly the culprit.</li><li><b>For 4–8 players</b>: after two clues, detectives get one suspect vote. Everyone must choose the same person to catch the culprit. A split or wrong vote lets the culprit keep moving.</li><li><b>Finish together</b>: get everyone still in the chase to Blackthorn House and investigate the door. A culprit can strike or jam a station; teammates can rescue anyone who is down.</li><li><b>Play three rounds</b>: detectives score for evidence and solving the case together. The culprit scores for sabotage and escape. Highest total wins; ties share the win.</li></ol><button id="tutorial-got-it" class="button button--gold button--full">Understood <span>→</span></button></div>
+  </div>
+</body>
+</html>
