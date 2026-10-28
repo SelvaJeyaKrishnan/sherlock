@@ -2,12 +2,12 @@ import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { rooms, randomCode, newRoom, makePlayer, activePlayers, authenticate, publicRoom, doAction, addLog, httpError, sweepRoom, findByCode, MAX_PLAYERS, RECONNECT_GRACE_MS } from './lib/game-core.mjs';
+import { rooms, randomCode, newRoom, makePlayer, activePlayers, hasPlayerName, validateName, authenticate, publicRoom, doAction, addLog, httpError, sweepRoom, findByCode, MAX_PLAYERS, RECONNECT_GRACE_MS, CHARACTERS } from './lib/game-core.mjs';
 
 const ROOT = fileURLToPath(new URL('.', import.meta.url));
 const PUBLIC = join(ROOT, 'public');
 const PORT = Number(process.env.PORT || 3000);
-const contentTypes = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml' };
+const contentTypes = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png' };
 
 async function readJson(req) {
   if (req.parsedBody) return req.parsedBody;
@@ -47,15 +47,20 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/api/game') return sendJson(res, 200, { ok: true, storage: 'local-memory' });
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const body = await readJson(req);
+      const name = validateName(body.name);
+      const character = body.character ?? 'boy';
+      if (!CHARACTERS.has(character)) return sendJson(res, 400, { error: 'Choose the boy or girl detective before starting.' });
       if (rooms.size >= 1500) return sendJson(res, 503, { error: 'The room service is busy. Try again in a moment.' });
       let code;
       do { code = randomCode(); } while (rooms.has(code));
-      const { room, player } = newRoom(code, body.name);
+      const { room, player } = newRoom(code, name, character);
       rooms.set(code, room);
       return sendJson(res, 201, { code, token: player.token, playerId: player.id });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {
       const body = await readJson(req);
+      const character = body.character ?? 'boy';
+      if (!CHARACTERS.has(character)) return sendJson(res, 400, { error: 'Choose the boy or girl detective before joining.' });
       const room = findByCode(body.code);
       if (!room) return sendJson(res, 404, { error: 'Room not found. Check the code and try again.' });
       const reconnect = [...room.players.values()].find((p) => p.token === body.token && body.token);
@@ -67,10 +72,12 @@ const server = http.createServer(async (req, res) => {
         room.lastTouched = Date.now();
         return sendJson(res, 200, { code: room.code, token: reconnect.token, playerId: reconnect.id, reconnected: true });
       }
+      const name = validateName(body.name);
       const players = activePlayers(room);
       if (room.phase !== 'lobby') return sendJson(res, 409, { error: 'This case has already started. Ask the host for the current room link after the case.' });
+      if (hasPlayerName(room, name)) return sendJson(res, 409, { error: 'That detective name is already in this room. Choose a different name.' });
       if (players.length >= MAX_PLAYERS) return sendJson(res, 409, { error: 'This room is full. A room can hold eight players.' });
-      const player = makePlayer(body.name);
+      const player = makePlayer(name, character);
       room.players.set(player.id, player);
       room.scores.set(player.id, 0);
       room.lastTouched = Date.now();

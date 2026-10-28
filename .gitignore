@@ -6,3 +6,5 @@ node_modules
 .appdata
 .env*
 !.env.example
+sherlock-game.zip
+vercel-ready-game/

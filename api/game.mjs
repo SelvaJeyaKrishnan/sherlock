@@ -9,6 +9,9 @@ import {
   addLog,
   httpError,
   MAX_PLAYERS,
+  CHARACTERS,
+  hasPlayerName,
+  validateName,
 } from "../lib/game-core.mjs";
 
 const STORE_PREFIX = "sherlock:room:";
@@ -53,13 +56,8 @@ async function readBody(request) {
 }
 
 function createUpstashStore() {
-const url =
-  process.env.UPSTASH_REDIS_REST_URL ||
-  process.env.KV_REST_API_URL;
-
-const token =
-  process.env.UPSTASH_REDIS_REST_TOKEN ||
-  process.env.KV_REST_API_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) {
     throw Object.assign(new Error("Connect an Upstash Redis database to this Vercel project, then redeploy."), { status: 503 });
   }
@@ -100,9 +98,12 @@ const token =
 }
 
 async function createRoom(body, store) {
+  const name = validateName(body.name);
+  const character = body.character ?? "boy";
+  if (!CHARACTERS.has(character)) throw httpError(400, "Choose the boy or girl detective before starting.");
   for (let attempt = 0; attempt < 8; attempt++) {
     const code = randomCode();
-    const { room, player } = newRoom(code, body.name);
+    const { room, player } = newRoom(code, name, character);
     const result = await store.create(`${STORE_PREFIX}${code}`, pack(room));
     if (result === "OK") return json({ code, token: player.token, playerId: player.id }, 201);
   }
@@ -122,6 +123,8 @@ async function transact(body, store) {
     let response;
 
     if (body.op === "join") {
+      const character = body.character ?? "boy";
+      if (!CHARACTERS.has(character)) throw httpError(400, "Choose the boy or girl detective before joining.");
       const reconnect = [...room.players.values()].find((p) => p.token === body.token && body.token);
       if (reconnect) {
         if (room.phase === "results") throw httpError(409, "This case is complete. Start a rematch before reconnecting.");
@@ -131,10 +134,12 @@ async function transact(body, store) {
         room.lastTouched = Date.now();
         response = json({ code: room.code, token: reconnect.token, playerId: reconnect.id, reconnected: true });
       } else {
+        const name = validateName(body.name);
         const players = activePlayers(room);
         if (room.phase !== "lobby") throw httpError(409, "This case has already started. Ask the host for the current room link after the case.");
+        if (hasPlayerName(room, name)) throw httpError(409, "That detective name is already in this room. Choose a different name.");
         if (players.length >= MAX_PLAYERS) throw httpError(409, "This room is full. A room can hold eight players.");
-        const player = makePlayer(body.name);
+        const player = makePlayer(name, character);
         room.players.set(player.id, player);
         room.scores.set(player.id, 0);
         room.lastTouched = Date.now();

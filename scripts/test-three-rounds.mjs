@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { newRoom, makePlayer, publicRoom, doAction } from '../lib/game-core.mjs';
+import { newRoom, makePlayer, publicRoom, doAction, DEDUCTION_ANSWERS } from '../lib/game-core.mjs';
 
 const originalRandom = Math.random;
 
-function addPlayer(room, name) {
-  const player = makePlayer(name);
+function addPlayer(room, name, character = 'boy') {
+  const player = makePlayer(name, character);
   room.players.set(player.id, player);
   room.scores.set(player.id, 0);
   return player;
@@ -19,14 +19,29 @@ function act(room, player, action, extra = {}) {
 function investigate(room, player, x, y) {
   player.x = x;
   player.y = y;
-  act(room, player, 'interact');
+  const stations = [
+    { id: 'letter-ink', x: 112, y: 108 }, { id: 'letter-seal', x: 252, y: 182 },
+    { id: 'cipher', x: 494, y: 154 }, { id: 'wire', x: 738, y: 306 }, { id: 'relay', x: 874, y: 410 },
+  ];
+  const station = stations.find((point) => Math.hypot(player.x - point.x, player.y - point.y) <= 58);
+  if (station?.id === 'cipher') act(room, player, 'puzzle', { station: 'cipher', solution: [9, 2, 8] });
+  else if (station?.id === 'wire') act(room, player, 'puzzle', { station: 'wire', solution: ['short', 'short', 'short', 'long'] });
+  else act(room, player, 'interact', station ? { answer: DEDUCTION_ANSWERS[station.id] } : {});
 }
 
 function readyAll(room, players) {
   for (const player of players) act(room, player, 'ready', { ready: true });
+  act(room, players[0], 'start');
 }
 
 try {
+  const characterRoom = newRoom('GIRL01', 'Irene', 'girl');
+  const characterGuest = addPlayer(characterRoom.room, 'Watson', 'boy');
+  const characterState = publicRoom(characterRoom.room, characterRoom.player);
+  assert.equal(characterState.me.character, 'girl', 'The selected character is part of the authenticated player state.');
+  assert.equal(characterState.room.players.find((player) => player.id === characterGuest.id).character, 'boy', 'Teammates receive the selected character in shared roster data.');
+  assert.ok(characterState.room.players.every((player) => !Object.hasOwn(player, 'role')), 'Public character data must not reveal hidden roles.');
+
   const { room, player: host } = newRoom('COOP01', 'Holmes');
   const guest = addPlayer(room, 'Watson');
 
@@ -39,10 +54,17 @@ try {
     assert.equal(publicRoom(room, host).me.ready, false, 'A player can change their readiness before the case begins.');
     act(room, host, 'ready', { ready: true });
     act(room, guest, 'ready', { ready: true });
+    assert.equal(room.phase, 'lobby', 'All-ready rooms wait for the host to start explicitly.');
+    assert.equal(doAction(room, guest, { action: 'start' }).ok, false, 'Only the host can start the case.');
+    act(room, host, 'start');
     assert.equal(room.mode, 'cooperative', 'Two players should play co-op mode.');
     assert.equal(host.role, 'detective');
     assert.equal(guest.role, 'detective');
     assert.equal(publicRoom(room, host).room.voteAvailable, false, 'Co-op mode must not offer culprit voting.');
+
+    host.x = 190; host.y = 70; host.moveAt = Date.now() - 350;
+    act(room, host, 'move', { dx: -1, dy: 0 });
+    assert.ok(host.x >= 184, 'Server-side movement must stop at the expanded building collision boundary.');
 
     for (const viewer of [host, guest]) {
       const state = publicRoom(room, viewer);
@@ -50,6 +72,10 @@ try {
       assert.equal(state.room.players.some((player) => player.revealedRole), false);
     }
 
+    host.x = 112; host.y = 108;
+    const badReading = doAction(room, host, { action: 'interact', answer: 'lampblack' });
+    assert.equal(badReading.ok, false, 'The server must reject an incorrect evidence conclusion.');
+    assert.equal(room.missions.letter.parts.ink, null, 'Wrong answers cannot advance shared mission progress.');
     investigate(room, host, 112, 108);
     investigate(room, guest, 252, 182);
     assert.equal(room.missions.letter.done, true);
@@ -100,7 +126,18 @@ try {
   party.room.clues.push({ id: 'clue-1' }, { id: 'clue-2' });
   assert.equal(publicRoom(party.room, detectives[0]).room.voteAvailable, true);
   for (const detective of detectives) act(party.room, detective, 'vote', { target: culprit.id });
-  assert.equal(party.room.culpritCaught, true, 'Unanimous suspicion should capture the culprit.');
+  assert.equal(party.room.phase, 'capture', 'A correct unanimous accusation must start the coordinated capture sequence.');
+  assert.equal(party.room.culpritCaught, false, 'The culprit stays at large until the trap is completed.');
+  assert.equal(publicRoom(party.room, detectives[0]).room.capture.next, 'lever');
+  assert.equal(publicRoom(party.room, detectives[0]).room.players.some((player) => player.revealedRole), false, 'The culprit stays hidden during the trap sequence.');
+  culprit.x = 484; culprit.y = 552;
+  for (const detective of detectives) { detective.x = 484; detective.y = 552; }
+  assert.equal(doAction(party.room, detectives[0], { action: 'trap', mechanism: 'valve' }).ok, false, 'The trap enforces the mechanism order.');
+  act(party.room, detectives[0], 'trap', { mechanism: 'lever' });
+  assert.equal(doAction(party.room, detectives[0], { action: 'trap', mechanism: 'valve' }).ok, false, 'Each trap step requires a different detective.');
+  act(party.room, detectives[1], 'trap', { mechanism: 'valve' });
+  act(party.room, detectives[2], 'trap', { mechanism: 'key' });
+  assert.equal(party.room.culpritCaught, true, 'The coordinated trap captures the unanimously identified culprit.');
   assert.equal(culprit.eliminated, true);
   assert.equal(publicRoom(party.room, detectives[0]).room.activeCount, 3);
   assert.equal(publicRoom(party.room, detectives[0]).room.players.find((p) => p.id === culprit.id).revealedRole, 'culprit');

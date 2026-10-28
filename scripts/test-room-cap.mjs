@@ -33,6 +33,10 @@ const waiting = await request({ op: 'state', code: coOpHost.data.code, token: co
 if (waiting.data.room.phase !== 'lobby' || waiting.data.room.readyCount !== 1) throw new Error('The game started before every player was ready.');
 const guestReady = await request({ op: 'action', action: 'ready', ready: true, code: coOpGuest.data.code, token: coOpGuest.data.token });
 if (!guestReady.response.ok) throw new Error(`Guest ready action failed: ${guestReady.data.error}`);
+const prematureGuestStart = await request({ op: 'action', action: 'start', code: coOpHost.data.code, token: coOpGuest.data.token });
+if (prematureGuestStart.response.status !== 400) throw new Error('A guest was allowed to start the room.');
+const hostStart = await request({ op: 'action', action: 'start', code: coOpHost.data.code, token: coOpHost.data.token });
+if (!hostStart.response.ok) throw new Error(`Host start action failed: ${hostStart.data.error}`);
 const coOpStates = [];
 for (const player of [coOpHost.data, coOpGuest.data]) coOpStates.push(await request({ op: 'state', code: player.code, token: player.token }));
 if (coOpStates.some(({ data }) => data.room.mode !== 'cooperative' || data.me.role !== 'detective')) throw new Error('A two-player game did not start in cooperative detective mode.');
@@ -47,6 +51,10 @@ for (const { data } of [partyHost, ...partySeats]) {
   const ready = await request({ op: 'action', action: 'ready', ready: true, code: data.code, token: data.token });
   if (!ready.response.ok) throw new Error(`A player could not signal ready: ${ready.data.error}`);
 }
+const prematurePartyGuestStart = await request({ op: 'action', action: 'start', code: partyHost.data.code, token: partySeats[0].data.token });
+if (prematurePartyGuestStart.response.status !== 400) throw new Error('A non-host was allowed to start the four-player room.');
+const partyHostStart = await request({ op: 'action', action: 'start', code: partyHost.data.code, token: partyHost.data.token });
+if (!partyHostStart.response.ok) throw new Error(`The host could not start the four-player case: ${partyHostStart.data.error}`);
 const partyStates = [];
 for (const player of [partyHost.data, ...partySeats.map(({ data }) => data)]) {
   partyStates.push(await request({ op: 'state', code: player.code, token: player.token }));
