@@ -560,7 +560,7 @@ function updateUi() {
 function updatePhaseCard(r, me) {
   const copy = {
     lobby: ['WAITING', `Round ${r.round} of ${r.totalRounds}`, 'Mark ready when you are set. The host starts after everyone is ready.'],
-    investigation: ['INVESTIGATE', 'Find the letter clues', 'Follow the gold marker. Different detectives examine the ink and seal.'],
+    investigation: ['INVESTIGATE', 'The Blackthorn case', 'Follow the active gold marker. New leads open when the evidence supports them.'],
     capture: ['FINAL TRAP', 'Catch the culprit', 'Go to Blackthorn Safehouse. Three detectives use the lever, valve, and key in order.'],
     reunion: ['REUNITE', 'Meet at Blackthorn House', 'Follow the last clue to the safehouse. Help anyone who needs it, then investigate together.'],
     results: ['CASE CLOSED', 'The truth comes to light.', 'The whole team reached Blackthorn House and finished the case.'],
@@ -598,18 +598,18 @@ function updateObjectives(r, me) {
     copy.textContent = me.objectiveAchieved ? 'You jammed two stations. Avoid the team’s unanimous vote and stay hidden.' : 'Get near a detective to strike, or an unfinished station to jam it. Both actions leave clues for the team.';
   } else if (r.phase === 'investigation') {
     const active = !missions.letter.done
-      ? { title: 'Examine the letter', detail: 'At Scotland Yard, check the ink and the seal.', progress: missions.letter.progress, total: missions.letter.total, teamWork: true }
+      ? { title: 'Find the letter clues', detail: 'Scotland Yard · examine the ink sample and seal register.', progress: missions.letter.progress, total: missions.letter.total, teamWork: true }
       : !missions.cipher.done
-        ? { title: 'Decode the timetable', detail: 'At 221B Baker Street, read Holmes’s reversed note.', progress: missions.cipher.progress, total: missions.cipher.total }
-        : { title: 'Repair the telegraph', detail: 'At East London Station, restore the signal and read its message.', progress: missions.telegraph.progress, total: missions.telegraph.total, teamWork: true };
+        ? { title: 'Decode the timetable', detail: '221B Baker Street · read Holmes’s reversed note.', progress: missions.cipher.progress, total: missions.cipher.total }
+        : { title: 'Repair the telegraph', detail: 'East London Station · restore the signal and read its message.', progress: missions.telegraph.progress, total: missions.telegraph.total, teamWork: true };
     title.textContent = active.title;
-    copy.textContent = active.teamWork ? `${active.detail} Different detectives handle each part, so work together.` : active.detail;
+    copy.textContent = active.teamWork ? `${active.detail} Different detectives examine each part, so work together.` : active.detail;
     $('mission-list').replaceChildren();
     const row = document.createElement('div'); row.className = 'mission-row';
     const icon = document.createElement('span'); icon.className = 'mission-check'; icon.textContent = '○';
     const text = document.createElement('span');
-    const label = document.createElement('b'); label.textContent = 'CURRENT TASK';
-    const description = document.createElement('small'); description.textContent = active.title;
+    const label = document.createElement('b'); label.textContent = 'CASE PROGRESS';
+    const description = document.createElement('small'); description.textContent = `${active.progress} of ${active.total} evidence steps complete`;
     text.append(label, description);
     const progress = document.createElement('span'); progress.className = 'mission-progress'; progress.textContent = `${active.progress}/${active.total}`;
     row.append(icon, text, progress); $('mission-list').append(row);
@@ -811,7 +811,9 @@ function updateControls(r, me) {
   const canUseTarget = Boolean(target && (!isCulprit || target.mission === 'reunion'));
   $('interact').disabled = !active || r.phase === 'capture' || me.incapacitated || me.eliminated || (!canUseTarget && !canRescue);
   $('interact').innerHTML = canRescue ? `<span>✚</span> Rescue` : target?.mission === 'reunion' ? '<span>◎</span> Reunite' : '<span>⌕</span> Examine';
-  $('interaction-hint').textContent = canRescue ? `Help ${down.name} up · press E or tap Rescue` : r.phase === 'capture' ? 'Go to Blackthorn Safehouse and use the next trap button.' : isCulprit && r.phase !== 'reunion' ? 'Keep your cover. Reach Blackthorn when the route opens.' : target ? `Examine ${target.label} · press E or tap Examine` : r.phase === 'lobby' ? 'Waiting for the host to begin.' : 'Follow the gold marker to your next clue.';
+  const canUseKey = !me.incapacitated && !me.eliminated && r.phase !== 'capture' && (canRescue || (active && canUseTarget));
+  $('interaction-keycap').classList.toggle('hidden', !canUseKey);
+  $('interaction-hint').textContent = canRescue ? `Help ${down.name} up · press E or tap Rescue` : r.phase === 'capture' ? 'Go to Blackthorn Safehouse and use the next trap button.' : isCulprit && r.phase !== 'reunion' ? 'Keep your cover. Reach Blackthorn when the route opens.' : target ? `Nearby: ${target.label} · press E or tap Examine` : r.phase === 'lobby' ? 'Waiting for the host to begin.' : 'Follow the gold marker to your next clue.';
   if (target?.mission === 'reunion' && r.reunionReady) $('interaction-hint').textContent = 'Complete the reunion · press E';
   const roleAction = $('role-action');
   const culpritCanAct = me.role === 'culprit' && !r.culpritCaught && ['investigation', 'reunion'].includes(r.phase);

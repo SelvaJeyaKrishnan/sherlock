@@ -178,6 +178,7 @@ body { background: radial-gradient(ellipse at 50% -20%, #1c2935 0, #0b1219 56%, 
 .clue-summary { margin: 3px 0 0 !important; line-height: 1.5 !important; }
 .clue-summary b { color: #6f5132; font: 700 8px var(--mono); letter-spacing: .05em; }
 .clue-original { margin-top: 5px; color: #534938; font-size: 9px; }
+
 .clue-original summary { cursor: pointer; color: #755e3b; }
 .clue-original p { margin-top: 4px; }
 .room-chip { border-color: rgba(214, 174, 105, .4); background: rgba(10, 15, 19, .72); }
@@ -420,4 +421,51 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
   .topbar__case { display: none; }
   .lobby-controls { grid-template-columns: 1fr; }
   .lobby-code-card { margin-inline: 0; }
+}
+
+/* Final exploration overrides: keep the playable city dominant and remove clipped panels. */
+.game-grid { grid-template-columns: minmax(0, 2.05fr) minmax(310px, .82fr); gap: 14px; }
+.map-panel { padding: 13px; }
+.map-wrap { border-color: rgba(220, 183, 120, .34); }
+.map-legend { color: #c0beb4; font-size: 9px; }
+.map-legend__hint { color: #bbb7aa; }
+.control-prompt { color: #e0dbd0; font-size: 12px; line-height: 1.4; }
+.button--interact { min-height: 42px; font-size: 12px; }
+.side-panel { gap: 9px; }
+.panel-card { padding: 12px 13px; }
+.phase-card h2 { margin: 6px 0 2px; font-size: 18px; }
+.phase-card > p { font-size: 12px; line-height: 1.45; }
+.phase-card .start-hint { margin-top: 6px; }
+.role-card { grid-template-columns: auto 1fr; align-items: baseline; column-gap: 10px; margin-top: 8px; padding: 7px 9px; }
+.role-card .eyebrow { grid-column: 1; }
+.role-card strong { grid-column: 2; grid-row: 1; }
+.role-card p { grid-column: 1 / -1; font-size: 11px; }
+.objective-card { padding-bottom: 12px; border-color: rgba(225, 188, 124, .48); background: linear-gradient(135deg, rgba(65, 49, 31, .35), rgba(13, 20, 25, .98) 62%); }
+.objective-card h3 { margin: 5px 0 4px; color: #f0dfbc; font-size: 20px; }
+.objective-card > p { color: #d0c8b8; font-size: 12px; line-height: 1.5; }
+.mission-list { margin-top: 9px; padding-top: 8px; }
+.mission-row b { color: #e3c58e; font-size: 9px; }
+.mission-row small { color: #d0cec4; font-size: 11px; }
+.mission-progress { color: #f0d08e; font-size: 11px; }
+.journal-card, .team-card { max-height: none; overflow: visible; }
+.clue-list { gap: 8px; }
+.empty-note { color: #c1c2ba; font-size: 11px; }
+.clue-entry { padding: 9px 10px; }
+.clue-entry h4 { font-size: 14px; }
+.clue-entry p { font-size: 11px; line-height: 1.5; }
+.clue-summary b { font-size: 9px; }
+.clue-original { font-size: 11px; }
+.team-list { max-height: none; gap: 8px; }
+.team-member__details b { font-size: 12px; }
+.team-member__details small { font-size: 10px; }
+.team-member__badge { font-size: 9px; }
+.trap-card > p, .vote-card > p, .vote-result { font-size: 12px; line-height: 1.5; }
+@media (max-width: 1050px) {
+  .game-grid { grid-template-columns: minmax(0, 1.55fr) minmax(285px, .9fr); }
+}
+@media (max-width: 760px) {
+  .game-grid { grid-template-columns: minmax(0, 1fr); }
+  .side-panel { display: flex; flex-direction: column; }
+  .phase-card, .objective-card, .journal-card, .team-card { min-height: 0; max-height: none; }
+  .team-list { max-height: none; }
 }

@@ -24,9 +24,9 @@ export function createLondonWorld(canvas, options = {}) {
   activeScene = scene;
   const night = new THREE.Color('#07111d');
   scene.background = night;
-  scene.fog = new THREE.FogExp2(night, 0.035);
+  scene.fog = new THREE.FogExp2(night, 0.026);
 
-  const camera = new THREE.PerspectiveCamera(52, 1.5, 0.1, 70);
+  const camera = new THREE.PerspectiveCamera(48, 1.5, 0.1, 70);
   camera.position.set(0, 12, 15);
   camera.lookAt(0, 0, 0);
   const hemisphere = new THREE.HemisphereLight(0x9bb8dc, 0x171617, 1.45);
@@ -39,6 +39,8 @@ export function createLondonWorld(canvas, options = {}) {
   moon.shadow.camera.top = 13; moon.shadow.camera.bottom = -13;
   moon.shadow.bias = -0.0005;
   scene.add(moon);
+  const cameraBlockers = [];
+  const cameraRay = new THREE.Raycaster();
 
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(31, 21),
@@ -124,12 +126,24 @@ export function createLondonWorld(canvas, options = {}) {
     const rightLeg = mesh(new THREE.CylinderGeometry(0.065, 0.075, 0.34, 7), dark, 0.09, 0.19, 0);
     const leftArm = mesh(new THREE.CylinderGeometry(0.055, 0.07, 0.36, 7), coat, -0.235, 0.65, 0);
     const rightArm = mesh(new THREE.CylinderGeometry(0.055, 0.07, 0.36, 7), coat, 0.235, 0.65, 0);
+    const vest = mesh(new THREE.BoxGeometry(0.15, 0.31, 0.035), dark, 0, 0.64, 0.147);
+    const tail = mesh(new THREE.BoxGeometry(0.36, 0.23, 0.1), coat, 0, 0.39, -0.01);
+    const lapelShape = new THREE.Shape();
+    lapelShape.moveTo(0, 0.13); lapelShape.lineTo(0.1, 0.05); lapelShape.lineTo(0.025, -0.12); lapelShape.closePath();
+    const lapelGeometry = new THREE.ShapeGeometry(lapelShape);
+    const lapelMaterial = new THREE.MeshStandardMaterial({ color: new THREE.Color(coatColor).lerp(new THREE.Color(0xd3bb91), 0.42), roughness: 0.88, side: THREE.DoubleSide });
+    const leftLapel = new THREE.Mesh(lapelGeometry, lapelMaterial); leftLapel.position.set(-0.115, 0.77, 0.171); leftLapel.rotation.z = 0.12;
+    const rightLapel = new THREE.Mesh(lapelGeometry, lapelMaterial); rightLapel.position.set(0.015, 0.77, 0.171); rightLapel.rotation.z = Math.PI - 0.12;
+    const buttons = [];
+    for (const y of [0.56, 0.65, 0.74]) buttons.push(mesh(new THREE.SphereGeometry(0.018, 6, 5), coatLight, 0, y, 0.181));
+    const leftBoot = mesh(new THREE.BoxGeometry(0.13, 0.09, 0.22), dark, -0.09, 0.055, 0.055);
+    const rightBoot = mesh(new THREE.BoxGeometry(0.13, 0.09, 0.22), dark, 0.09, 0.055, 0.055);
     const ringColor = player.isMe ? 0xe7bd75 : 0x9ebac2;
     const ring = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.018, 5, 24), new THREE.MeshBasicMaterial({ color: ringColor, transparent: true, opacity: player.isMe ? 0.9 : 0.42 }));
     ring.rotation.x = -Math.PI / 2; ring.position.y = 0.025;
     const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.29, 16), new THREE.MeshBasicMaterial({ color: 0x020508, transparent: true, opacity: 0.52, depthWrite: false }));
     shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.006;
-    group.add(body, scarf, head, hairCap, brim, crown, leftLeg, rightLeg, leftArm, rightArm, ring, shadow);
+    group.add(body, scarf, vest, tail, leftLapel, rightLapel, ...buttons, head, hairCap, brim, crown, leftLeg, rightLeg, leftArm, rightArm, leftBoot, rightBoot, ring, shadow);
     if (character === 'girl') {
       for (const side of [-1, 1]) {
         const lock = mesh(new THREE.CylinderGeometry(0.035, 0.048, 0.3, 7), hair, side * 0.112, 0.91, -0.022);
@@ -212,10 +226,22 @@ export function createLondonWorld(canvas, options = {}) {
     const localActor = actors.get(localPlayerId);
     if (localActor) {
       const focus = localActor.group.position;
-      const distance = 4.9;
+      const distance = 5.9;
       const horizontal = Math.cos(pitch) * distance;
-      camera.position.set(focus.x + Math.sin(yaw) * horizontal, focus.y + 0.65 + Math.sin(pitch) * distance, focus.z + Math.cos(yaw) * horizontal);
-      camera.lookAt(focus.x, focus.y + 0.8, focus.z);
+      const lookAt = focus.clone().add(new THREE.Vector3(0, 0.92, 0));
+      const origin = focus.clone().add(new THREE.Vector3(0, 0.8, 0));
+      const desired = new THREE.Vector3(
+        focus.x + Math.sin(yaw) * horizontal,
+        focus.y + 0.8 + Math.sin(pitch) * distance,
+        focus.z + Math.cos(yaw) * horizontal,
+      );
+      const direction = desired.clone().sub(origin).normalize();
+      cameraRay.set(origin, direction);
+      const obstruction = cameraRay.intersectObjects(cameraBlockers, false)[0];
+      const cameraDistance = obstruction ? Math.max(1.5, obstruction.distance - 0.24) : distance;
+      const targetPosition = origin.addScaledVector(direction, cameraDistance);
+      camera.position.lerp(targetPosition, 1 - Math.exp(-delta * 8));
+      camera.lookAt(lookAt);
     }
     renderer.render(scene, camera);
   }
@@ -381,6 +407,20 @@ function makeCobbleTexture() {
   return texture;
 }
 
+function makeSignTexture(text) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512; canvas.height = 128;
+  const context = canvas.getContext('2d');
+  context.fillStyle = '#19201f'; context.fillRect(0, 0, canvas.width, canvas.height);
+  context.strokeStyle = '#c19b58'; context.lineWidth = 7; context.strokeRect(8, 8, 496, 112);
+  context.strokeStyle = 'rgba(228,195,132,.42)'; context.lineWidth = 2; context.strokeRect(18, 18, 476, 92);
+  context.fillStyle = '#edcf91'; context.font = `600 ${text.length > 6 ? 48 : 64}px Georgia, serif`;
+  context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillText(text, 256, 65, 450);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 function addRoad(path, width, material) {
   for (let index = 1; index < path.length; index++) {
     const a = toVector(path[index - 1][0], path[index - 1][1], 0.008);
@@ -403,6 +443,22 @@ function addRoad(path, width, material) {
   }
 }
 
+function makeGableRoof(width, depth, peakHeight) {
+  const halfW = width / 2, halfD = depth / 2;
+  const vertices = [
+    -halfW, 0, -halfD,  halfW, 0, -halfD,  -halfW, peakHeight, 0,
+    -halfW, peakHeight, 0,  halfW, 0, -halfD,  halfW, peakHeight, 0,
+    -halfW, 0, halfD,  -halfW, peakHeight, 0,  halfW, 0, halfD,
+    -halfW, peakHeight, 0,  halfW, peakHeight, 0,  halfW, 0, halfD,
+    -halfW, 0, -halfD,  -halfW, 0, halfD,  -halfW, peakHeight, 0,
+    halfW, 0, -halfD,  halfW, peakHeight, 0,  halfW, 0, halfD,
+  ];
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
 function addDistrictEdge() {
   const river = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 19), new THREE.MeshStandardMaterial({ color: 0x142432, roughness: 0.2, metalness: 0.42 }));
   river.rotation.x = -Math.PI / 2; river.position.set(12.2, -0.045, 0); sceneAdd(river);
@@ -420,21 +476,48 @@ function addBuilding(building, index) {
   const house = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), wall);
   house.position.set(center.x, height / 2, center.z); house.castShadow = true; house.receiveShadow = true; sceneAdd(house);
 
-  const roofHeight = Math.max(0.42, height * 0.26);
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.max(width, depth) * 0.72, roofHeight, 4), new THREE.MeshStandardMaterial({ color: 0x1e2228, roughness: 0.82 }));
-  roof.rotation.y = Math.PI / 4; roof.position.set(center.x, height + roofHeight / 2 - 0.02, center.z); roof.castShadow = true; sceneAdd(roof);
+  cameraBlockers.push(house);
 
-  const glass = new THREE.MeshStandardMaterial({ color: 0x8e6943, emissive: 0xb46c2b, emissiveIntensity: 0.62, roughness: 0.35 });
-  const across = Math.max(1, Math.min(4, Math.floor(width / 0.42)));
-  const rows = Math.max(1, Math.min(3, Math.floor(height / 0.58)));
+  const roofHeight = Math.max(0.42, height * 0.26);
+  const roofMat = new THREE.MeshStandardMaterial({ color: 0x252b30, roughness: 0.88, metalness: 0.04, side: THREE.DoubleSide });
+  const roof = new THREE.Mesh(makeGableRoof(width + 0.16, depth + 0.2, roofHeight), roofMat);
+  roof.position.set(center.x, height, center.z); roof.castShadow = true; roof.receiveShadow = true; sceneAdd(roof);
+  cameraBlockers.push(roof);
+
+  const facadeZ = center.z + depth / 2 + 0.025;
+  const glass = new THREE.MeshStandardMaterial({ color: 0x97734c, emissive: 0xa4511d, emissiveIntensity: index % 4 === 0 ? 0.62 : 0.28, roughness: 0.44, metalness: 0.08 });
+  const frame = new THREE.MeshStandardMaterial({ color: 0x252321, roughness: 0.82 });
+  const sill = new THREE.MeshStandardMaterial({ color: 0x777067, roughness: 0.93 });
+  const across = Math.max(1, Math.min(5, Math.floor(width / 0.5)));
+  const rows = Math.max(1, Math.min(3, Math.floor(height / 0.56)));
+  const windowWidth = Math.min(0.24, width / (across + 1) * 0.55);
+  const windowHeight = Math.min(0.32, height / (rows + 1) * 0.52);
   for (let row = 0; row < rows; row++) for (let col = 0; col < across; col++) {
     const wx = center.x - width * 0.34 + (width * 0.68 * col) / Math.max(1, across - 1);
-    const wy = 0.45 + row * Math.min(0.5, height / (rows + 1));
-    const windowMesh = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.19, 0.025), glass);
-    windowMesh.position.set(wx, wy, center.z + depth / 2 + 0.014); sceneAdd(windowMesh);
+    const wy = Math.min(height - 0.34, 0.43 + row * Math.min(0.52, height / (rows + 1)));
+    const pane = new THREE.Mesh(new THREE.BoxGeometry(windowWidth, windowHeight, 0.035), glass);
+    pane.position.set(wx, wy, facadeZ); sceneAdd(pane);
+    const mullion = new THREE.Mesh(new THREE.BoxGeometry(0.018, windowHeight, 0.045), frame);
+    mullion.position.set(wx, wy, facadeZ + 0.023); sceneAdd(mullion);
+    for (const offset of [-1, 1]) {
+      const jamb = new THREE.Mesh(new THREE.BoxGeometry(0.035, windowHeight + 0.07, 0.055), frame);
+      jamb.position.set(wx + offset * (windowWidth / 2 + 0.025), wy, facadeZ + 0.02); sceneAdd(jamb);
+    }
+    const sillPiece = new THREE.Mesh(new THREE.BoxGeometry(windowWidth + 0.12, 0.045, 0.1), sill);
+    sillPiece.position.set(wx, wy - windowHeight / 2 - 0.045, facadeZ + 0.035); sceneAdd(sillPiece);
   }
-  const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.45, 0.12), new THREE.MeshStandardMaterial({ color: 0x211c1b, roughness: 1 }));
-  chimney.position.set(center.x + width * 0.22, height + roofHeight * 0.7, center.z - depth * 0.16); sceneAdd(chimney);
+  const doorWidth = Math.min(0.4, width * 0.21);
+  const doorHeight = Math.min(0.82, height * 0.44);
+  const door = new THREE.Mesh(new THREE.BoxGeometry(doorWidth, doorHeight, 0.07), new THREE.MeshStandardMaterial({ color: 0x30241c, roughness: 0.82 }));
+  door.position.set(center.x, doorHeight / 2 + 0.045, facadeZ + 0.02); sceneAdd(door);
+  const doorLintel = new THREE.Mesh(new THREE.BoxGeometry(doorWidth + 0.13, 0.07, 0.11), sill);
+  doorLintel.position.set(center.x, doorHeight + 0.09, facadeZ + 0.025); sceneAdd(doorLintel);
+  const baseCourse = new THREE.Mesh(new THREE.BoxGeometry(width + 0.08, 0.12, depth + 0.08), sill);
+  baseCourse.position.set(center.x, 0.07, center.z); sceneAdd(baseCourse);
+  const cornice = new THREE.Mesh(new THREE.BoxGeometry(width + 0.12, 0.1, depth + 0.12), sill);
+  cornice.position.set(center.x, height - 0.08, center.z); sceneAdd(cornice);
+  const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.5, 0.16), new THREE.MeshStandardMaterial({ color: 0x292421, roughness: 1 }));
+  chimney.position.set(center.x + width * 0.22, height + roofHeight * 0.62, center.z - depth * 0.16); sceneAdd(chimney);
 }
 
 function addLandmarks() {
@@ -450,8 +533,15 @@ function addLandmarks() {
   bakerRoof.position.set(baker.position.x, 1.96, baker.position.z); bakerRoof.rotation.y = Math.PI / 4; sceneAdd(bakerRoof);
   const plaque = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.16, 0.025), new THREE.MeshStandardMaterial({ color: 0xc5a45e, emissive: 0x5c3e14, emissiveIntensity: 0.32, metalness: 0.7 }));
   plaque.position.set(baker.position.x, 0.97, baker.position.z + 0.43); sceneAdd(plaque);
+  const houseNumber = new THREE.Mesh(new THREE.PlaneGeometry(0.23, 0.12), new THREE.MeshBasicMaterial({ map: makeSignTexture('221B'), toneMapped: false }));
+  houseNumber.position.set(baker.position.x, 0.97, baker.position.z + 0.447); sceneAdd(houseNumber);
   // Iron-and-glass station canopy beside the rails.
   addStationCanopy(810, 336);
+  const stationCenter = toVector(810, 336);
+  const stationBoard = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.34, 0.09), new THREE.MeshStandardMaterial({ color: 0x25211b, roughness: 0.82 }));
+  stationBoard.position.set(stationCenter.x, 1.72, stationCenter.z + 0.76); stationBoard.castShadow = true; sceneAdd(stationBoard);
+  const stationText = new THREE.Mesh(new THREE.PlaneGeometry(1.12, 0.25), new THREE.MeshBasicMaterial({ map: makeSignTexture('EAST LONDON'), toneMapped: false }));
+  stationText.position.set(stationCenter.x, 1.72, stationCenter.z + 0.812); sceneAdd(stationText);
   // Blackthorn's gate remains visible at the final reunion point.
   const gateMaterial = new THREE.MeshStandardMaterial({ color: 0x25292c, metalness: 0.64, roughness: 0.43 });
   for (const side of [-1, 1]) {
@@ -497,8 +587,10 @@ function addLamp(x, y, index) {
   post.position.set(location.x, 0.59, location.z); post.castShadow = true; sceneAdd(post);
   const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.22, 0.17), new THREE.MeshStandardMaterial({ color: 0xd7a75f, emissive: 0xffa640, emissiveIntensity: 1.9, roughness: 0.3 }));
   lantern.position.set(location.x, 1.25, location.z); sceneAdd(lantern);
-  const light = new THREE.PointLight(0xffb75f, 1.15, 3.7, 2);
-  light.position.set(location.x, 1.28, location.z); sceneAdd(light);
+  if (index % 3 === 0) {
+    const light = new THREE.PointLight(0xffb75f, 0.85, 3.1, 2);
+    light.position.set(location.x, 1.28, location.z); sceneAdd(light);
+  }
   if (index % 3 === 0) {
     const pool = new THREE.Mesh(new THREE.CircleGeometry(0.7, 20), new THREE.MeshBasicMaterial({ color: 0xd89b4a, transparent: true, opacity: 0.09, depthWrite: false }));
     pool.rotation.x = -Math.PI / 2; pool.position.set(location.x, 0.008, location.z); sceneAdd(pool);
