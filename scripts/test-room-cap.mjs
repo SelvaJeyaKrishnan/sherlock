@@ -61,7 +61,7 @@ for (const player of [partyHost.data, ...partySeats.map(({ data }) => data)]) {
 }
 if (partyStates.some(({ response }) => !response.ok)) throw new Error('A player could not read the four-player game state.');
 const roles = partyStates.map(({ data }) => data.me.role);
-if (partyStates.some(({ data }) => data.room.mode !== 'deduction' || data.room.players.some((player) => player.revealedRole))) throw new Error('The four-player case exposed a secret role or skipped culprit mode.');
-if (roles.filter((role) => role === 'culprit').length !== 1) throw new Error('A four-player game must assign exactly one culprit.');
+if (partyStates.some(({ data }) => data.room.mode !== 'cooperative')) throw new Error('The four-player case must be in cooperative mode.');
+if (roles.some((role) => role !== 'detective')) throw new Error('All players in the four-player game must be detectives.');
 
-console.log('PASS: room cap; game waits for every player’s ready signal; two-player co-op and four-player hidden-culprit modes start correctly.');
+console.log('PASS: room cap; game waits for every player’s ready signal; two-player and four-player cooperative modes start correctly.');

@@ -4,30 +4,99 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#080e15">
-  <meta name="description" content="Join a Sherlock Holmes mystery for 2–8 players. Solve together with 2–3 players or hunt the hidden culprit with a larger group.">
+  <meta name="description" content="A cooperative multiplayer detective adventure for 2–8 players. Explore London, solve simple puzzles, and collect six pieces of the mysterious thief's portrait to win together.">
   <link rel="icon" href="/cover.svg" type="image/svg+xml">
   <link rel="preload" as="image" href="/london-district.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
   <title>Sherlock: Shadows of London</title>
-  <link rel="stylesheet" href="/styles.css">
-  <script src="/boot.js"></script>
-  <script type="module" src="/loader.js"></script>
+  <link rel="stylesheet" href="/styles.css?v=20261031_live">
+  <script src="/boot.js?v=20261031_live"></script>
+  <script type="module" src="/loader.js?v=20261031_live"></script>
 </head>
 <body>
   <main id="welcome-screen" class="welcome-screen">
+    <canvas id="title-3d" class="title-3d-canvas" aria-hidden="true"></canvas>
     <div class="landing__grain" aria-hidden="true"></div>
-    <header class="brand"><span class="brand__mark">S</span><span>SHERLOCK HOLMES · 221B BAKER STREET</span><span class="brand__rule"></span><span>CASE 001</span></header>
-    <section class="welcome-hero">
-      <p class="eyebrow">A MULTIPLAYER DETECTIVE MYSTERY · 2–8 PLAYERS</p>
-      <h1>Sherlock:<br><em>Shadows of London</em></h1>
-      <p class="welcome-tagline">Trust No One. Find the Truth.</p>
-      <p class="hero__intro">A forged letter. A city beneath the fog. A culprit hiding in plain sight.</p>
-      <button id="play-game" class="button button--gold welcome-play" type="button">Play <span>→</span></button>
-    </section>
-    <footer class="welcome-footer"><button id="open-settings" type="button">⚙ Settings</button><button id="open-how-to-play" type="button">▤ How to Play</button></footer>
+    <header class="brand">
+      <span class="brand__mark">S</span>
+      <span>SHERLOCK HOLMES · 221B BAKER STREET</span>
+      <span class="brand__rule"></span>
+      <span>CASE 001</span>
+    </header>
+    <div class="menu-hero-container">
+      <header class="menu-title-header">
+        <div class="holmes-cameo-crest" aria-hidden="true">
+          <svg viewBox="0 0 100 100" class="crest-svg">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 2"/>
+            <circle cx="50" cy="50" r="41" fill="none" stroke="currentColor" stroke-width="0.8"/>
+            <path d="M48 24c-6 0-11 5-11 11 0 3 1 6 3 8-1 1-3 3-3 6 0 4 3 7 7 8v4c-6 2-14 8-16 17h44c-2-9-10-15-16-17v-4c4-1 7-4 7-8 0-3-2-5-3-6 2-2 3-5 3-8 0-6-5-11-11-11z" fill="currentColor" opacity="0.85"/>
+            <path d="M38 52c-4 0-7 2-7 5 0 4 3 6 7 6h2v-11z" fill="currentColor" opacity="0.75"/>
+            <path d="M31 57c-6 0-9 4-9 8 0 5 4 8 9 8s9-3 9-8c0-3-2-5-4-6l-5-2z" fill="currentColor" opacity="0.75"/>
+            <path d="M22 65c-2-4 1-8 5-10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+          </svg>
+        </div>
+        <h1 class="cinematic-title">
+          <span class="title-main">SHERLOCK</span>
+          <span class="title-ornament-row">
+            <span class="ornament-line ornament-line--left" aria-hidden="true"></span>
+            <span class="title-sub">SHADOWS OF LONDON</span>
+            <span class="ornament-line ornament-line--right" aria-hidden="true"></span>
+          </span>
+        </h1>
+        <p class="title-mystery-eyebrow">A MULTIPLAYER DETECTIVE MYSTERY · COOPERATIVE ADVENTURE</p>
+        <p class="welcome-tagline">Explore London · Solve Simple Puzzles · Win Together <span class="sr-only">Trust No One. Find the Truth.</span></p>
+        <p class="hero__intro">Explore London. Solve simple puzzles. Collect six pieces of the mysterious thief's portrait. Return to headquarters, assemble the picture, and win together.</p>
+      </header>
+
+      <nav class="cinematic-menu-card" aria-label="Main Menu">
+        <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+        <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+        <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+        <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+
+        <button id="menu-create-room" class="button button--gold button--menu-primary" type="button" onclick="if(window.createMultiplayerRoom){window.createMultiplayerRoom();}">
+          <span>CREATE MULTIPLAYER ROOM</span> <span class="btn-arrow" aria-hidden="true">→</span>
+        </button>
+
+        <button id="menu-join-room" class="button button--outline button--menu-item" type="button" onclick="if(window.toggleMenuJoin){window.toggleMenuJoin();}">
+          <span>JOIN EXISTING ROOM</span> <span class="menu-icon" aria-hidden="true">#</span>
+        </button>
+
+        <div id="menu-join-box" class="menu-join-box hidden" role="region" aria-label="Join Room Code">
+          <div class="menu-join-input-wrap">
+            <input id="menu-room-code-input" class="menu-room-code-input" maxlength="6" placeholder="ROOM CODE" autocomplete="off" spellcheck="false" aria-label="Six character room code">
+            <button id="menu-join-submit" class="button button--gold button--join-submit" type="button" onclick="if(window.submitMenuJoin){window.submitMenuJoin();}">Join →</button>
+          </div>
+          <p id="menu-join-error" class="menu-join-error error" role="alert" aria-live="polite"></p>
+        </div>
+
+        <p id="menu-global-error" class="menu-global-error error" role="alert" aria-live="polite"></p>
+
+        <div class="menu-sub-row" role="navigation" aria-label="Settings and Help">
+          <button id="open-settings" class="button button--quiet button--menu-sub" type="button">
+            <span class="footer-icon">⚙</span> Settings
+          </button>
+          <span class="menu-sub-divider" aria-hidden="true">·</span>
+          <button id="open-how-to-play" class="button button--quiet button--menu-sub" type="button">
+            <span class="footer-icon">▤</span> How to Play
+          </button>
+        </div>
+      </nav>
+    </div>
+    <footer class="welcome-footer">
+      <span>OBSERVE · DEDUCE · ACCUSE</span>
+      <span>THE CASES OF SHERLOCK HOLMES</span>
+    </footer>
   </main>
 
   <main id="identity-screen" class="entry-screen hidden">
     <section class="entry-step-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
       <button id="identity-back" class="text-back" type="button">← Back</button>
       <p class="eyebrow">THE BAKER STREET REGISTER · STEP 01</p>
       <h1>Enter Your Detective Name</h1>
@@ -41,24 +110,43 @@
 
   <main id="landing" class="landing hidden">
     <div class="landing__grain" aria-hidden="true"></div>
-    <header class="brand"><span class="brand__mark">S</span><span>SHERLOCK HOLMES · 221B BAKER STREET</span><span class="brand__rule"></span><span>CASE 001</span></header>
+    <header class="brand">
+      <span class="brand__mark">S</span>
+      <span>SHERLOCK HOLMES · 221B BAKER STREET</span>
+      <span class="brand__rule"></span>
+      <span>CASE 001</span>
+    </header>
     <section class="hero">
       <p class="eyebrow">A FOGBOUND INVESTIGATION · STEP 02</p>
       <h1>Gather Your<br><em>Consulting Detectives</em></h1>
       <p class="hero__intro">Welcome, <strong id="welcome-detective-name">Detective</strong>. Create a case room or join your friends with their six-letter code.</p>
-      <div class="case-stamp"><span>THE BAKER STREET CASEBOOK · NO. 001</span><strong>THE LETTER THAT<br>SHOULDN’T EXIST</strong><span>221B BAKER STREET → SCOTLAND YARD · 1891</span></div>
+      <div class="case-stamp">
+        <span>THE BAKER STREET CASEBOOK · NO. 001</span>
+        <strong>THE LETTER THAT<br>SHOULDN’T EXIST</strong>
+        <span>221B BAKER STREET → SCOTLAND YARD · 1891</span>
+      </div>
     </section>
     <section class="entry-card room-entry-card" aria-label="Join or create a game">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
       <button id="room-back" class="text-back" type="button">← Change detective name</button>
       <p class="eyebrow">JOIN OR CREATE A ROOM</p>
       <button id="create-room" class="button button--gold button--full">Create Room <span aria-hidden="true">↗</span></button>
       <div class="room-divider"><span>OR JOIN AN EXISTING CASE</span></div>
       <label for="room-code">ROOM CODE</label>
-      <div class="join-row"><input id="room-code" maxlength="6" aria-label="Room code" placeholder="e.g. A7F3KQ" autocomplete="off"><button id="join-room" class="button button--outline">Join</button></div>
+      <div class="join-row">
+        <input id="room-code" maxlength="6" aria-label="Room code" placeholder="e.g. A7F3KQ" autocomplete="off">
+        <button id="join-room" class="button button--outline">Join</button>
+      </div>
       <p id="landing-error" class="error" role="alert" aria-live="polite"></p>
-      <p class="entry-note">2–3 detectives cooperate · 4–8 uncover the culprit</p>
+      <p class="entry-note">2–8 detectives cooperate · Explore London and solve the mystery together</p>
     </section>
-    <footer class="landing-footer"><span>OBSERVE · DEDUCE · ACCUSE</span><span>THE CASES OF SHERLOCK HOLMES</span></footer>
+    <footer class="landing-footer">
+      <span>OBSERVE · DEDUCE · ACCUSE</span>
+      <span>THE CASES OF SHERLOCK HOLMES</span>
+    </footer>
   </main>
 
   <div id="character-gate" class="character-gate hidden" role="dialog" aria-modal="true" aria-labelledby="character-title">
@@ -68,84 +156,584 @@
       <p class="eyebrow">221B BAKER STREET · FIELD REGISTRY</p>
       <h1 id="character-title">Choose Your Detective</h1>
       <p class="character-gate__intro">Choose the face you’ll wear in the fog. Your selection will follow you into every room.</p>
+
+      <!-- Panel 2 Character Selection Tabs -->
+      <nav class="character-tabs" role="tablist" aria-label="Victorian Detective Roster">
+        <button class="character-tab is-active" type="button" role="tab" data-target-char="boy">Sherlock</button>
+        <button class="character-tab" type="button" role="tab" data-target-char="watson">Watson</button>
+        <button class="character-tab" type="button" role="tab" data-target-char="girl">Detective</button>
+        <button class="character-tab" type="button" role="tab" data-target-char="journalist">Journalist</button>
+        <button class="character-tab" type="button" role="tab" data-target-char="officer">Officer</button>
+      </nav>
+
       <div class="character-choices" role="radiogroup" aria-label="Choose your detective">
+        <!-- 1. Sherlock Holmes -->
         <button class="character-choice" type="button" role="radio" aria-checked="false" data-character="boy">
           <span class="character-choice__portrait"><canvas class="character-preview" data-preview="boy" aria-hidden="true"></canvas><span class="character-choice__seal">I</span></span>
-          <span class="character-choice__text"><strong>Boy Detective</strong><small>A young investigator of Baker Street</small></span>
+          <span class="character-choice__text">
+            <strong>Sherlock Holmes</strong>
+            <small>Brilliant detective with unmatched observation skills.</small>
+            <span class="character-stats-row">
+              <span class="stat-bar"><span class="stat-name">Speed</span><span class="stat-track"><span class="stat-fill" style="width: 70%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Investigation</span><span class="stat-track"><span class="stat-fill" style="width: 100%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Team Support</span><span class="stat-track"><span class="stat-fill" style="width: 50%"></span></span></span>
+            </span>
+          </span>
           <span class="character-choice__check" aria-hidden="true">✓</span>
         </button>
+
+        <!-- 2. Dr. John Watson -->
+        <button class="character-choice" type="button" role="radio" aria-checked="false" data-character="watson">
+          <span class="character-choice__portrait"><canvas class="character-preview" data-preview="watson" aria-hidden="true"></canvas><span class="character-choice__seal">II</span></span>
+          <span class="character-choice__text">
+            <strong>Dr. John Watson</strong>
+            <small>Loyal companion, military doctor, and marksman.</small>
+            <span class="character-stats-row">
+              <span class="stat-bar"><span class="stat-name">Speed</span><span class="stat-track"><span class="stat-fill" style="width: 60%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Investigation</span><span class="stat-track"><span class="stat-fill" style="width: 75%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Team Support</span><span class="stat-track"><span class="stat-fill" style="width: 100%"></span></span></span>
+            </span>
+          </span>
+          <span class="character-choice__check" aria-hidden="true">✓</span>
+        </button>
+
+        <!-- 3. Irene Adler (The Detective) -->
         <button class="character-choice" type="button" role="radio" aria-checked="false" data-character="girl">
-          <span class="character-choice__portrait"><canvas class="character-preview" data-preview="girl" aria-hidden="true"></canvas><span class="character-choice__seal">II</span></span>
-          <span class="character-choice__text"><strong>Girl Detective</strong><small>A sharp-eyed sleuth of the city</small></span>
+          <span class="character-choice__portrait"><canvas class="character-preview" data-preview="girl" aria-hidden="true"></canvas><span class="character-choice__seal">III</span></span>
+          <span class="character-choice__text">
+            <strong>Irene Adler</strong>
+            <small>Master of disguise, cunning strategist, and agile sleuth.</small>
+            <span class="character-stats-row">
+              <span class="stat-bar"><span class="stat-name">Speed</span><span class="stat-track"><span class="stat-fill" style="width: 95%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Investigation</span><span class="stat-track"><span class="stat-fill" style="width: 85%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Team Support</span><span class="stat-track"><span class="stat-fill" style="width: 60%"></span></span></span>
+            </span>
+          </span>
+          <span class="character-choice__check" aria-hidden="true">✓</span>
+        </button>
+
+        <!-- 4. Langdale Pike (The Journalist) -->
+        <button class="character-choice" type="button" role="radio" aria-checked="false" data-character="journalist">
+          <span class="character-choice__portrait"><canvas class="character-preview" data-preview="journalist" aria-hidden="true"></canvas><span class="character-choice__seal">IV</span></span>
+          <span class="character-choice__text">
+            <strong>Langdale Pike</strong>
+            <small>London press correspondent with underground connections.</small>
+            <span class="character-stats-row">
+              <span class="stat-bar"><span class="stat-name">Speed</span><span class="stat-track"><span class="stat-fill" style="width: 80%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Investigation</span><span class="stat-track"><span class="stat-fill" style="width: 70%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Team Support</span><span class="stat-track"><span class="stat-fill" style="width: 80%"></span></span></span>
+            </span>
+          </span>
+          <span class="character-choice__check" aria-hidden="true">✓</span>
+        </button>
+
+        <!-- 5. Inspector Lestrade (The Officer) -->
+        <button class="character-choice" type="button" role="radio" aria-checked="false" data-character="officer">
+          <span class="character-choice__portrait"><canvas class="character-preview" data-preview="officer" aria-hidden="true"></canvas><span class="character-choice__seal">V</span></span>
+          <span class="character-choice__text">
+            <strong>Inspector Lestrade</strong>
+            <small>Scotland Yard veteran with stalwart authority.</small>
+            <span class="character-stats-row">
+              <span class="stat-bar"><span class="stat-name">Speed</span><span class="stat-track"><span class="stat-fill" style="width: 65%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Investigation</span><span class="stat-track"><span class="stat-fill" style="width: 60%"></span></span></span>
+              <span class="stat-bar"><span class="stat-name">Team Support</span><span class="stat-track"><span class="stat-fill" style="width: 90%"></span></span></span>
+            </span>
+          </span>
           <span class="character-choice__check" aria-hidden="true">✓</span>
         </button>
       </div>
+
       <p id="character-hint" class="character-gate__hint" aria-live="polite">Select a detective to continue.</p>
-      <button id="character-continue" class="button button--gold character-continue" type="button" disabled>Confirm Detective <span>→</span></button>
+      <button id="character-continue" class="button button--gold character-continue" type="button" disabled>SELECT <span>→</span></button>
     </section>
   </div>
 
   <main id="game" class="game hidden">
     <header class="topbar">
-      <a class="topbar__brand" href="/" id="leave-game"><span class="brand__mark brand__mark--small">S</span><span>221B · SHERLOCK HOLMES</span></a>
-      <div class="topbar__case"><span class="topbar__dot"></span> BAKER STREET CASEBOOK <span class="topbar__slash">/</span> THE LETTER THAT SHOULDN’T EXIST</div>
+      <a class="topbar__brand" href="/" id="leave-game"><span class="brand__mark brand__mark--small">S</span><span>SHERLOCK: SHADOWS OF LONDON</span></a>
+      <div class="topbar__case"><span class="topbar__dot"></span> CASE: THE PHANTOM OF LONDON</div>
+      <div id="team-portrait-hud" class="team-portrait-hud" aria-label="Shared Thief Portrait Progress">
+        <span class="hud-portrait-icon" aria-hidden="true">🧩</span>
+        <span class="hud-portrait-label">PORTRAIT:</span>
+        <strong id="hud-portrait-count">0 / 6</strong>
+        <div class="hud-portrait-slots" id="hud-portrait-slots">
+          <span class="hud-slot" data-slot="1" title="Piece 1">1</span>
+          <span class="hud-slot" data-slot="2" title="Piece 2">2</span>
+          <span class="hud-slot" data-slot="3" title="Piece 3">3</span>
+          <span class="hud-slot" data-slot="4" title="Piece 4">4</span>
+          <span class="hud-slot" data-slot="5" title="Piece 5">5</span>
+          <span class="hud-slot" data-slot="6" title="Piece 6">6</span>
+        </div>
+      </div>
       <button id="copy-code" class="room-chip" title="Copy room code"><span>ROOM</span><strong id="room-code-display">------</strong><span class="copy-icon">▣</span></button>
       <button id="replay-tutorial" class="room-leave tutorial-replay" type="button">How to Play</button>
       <button id="leave-room" class="room-leave" type="button">Leave Room</button>
     </header>
-    <section id="lobby-screen" class="lobby-screen hidden" aria-label="Multiplayer lobby">
-      <div class="lobby-card">
-        <p class="eyebrow">THE CONSULTING DETECTIVES · WAITING ROOM</p>
-        <h1>Case Room</h1>
-        <p class="lobby-copy">Share the room code. Everyone marks ready; the host starts the case once at least two players are ready.</p>
-        <div class="lobby-code-card"><span>ROOM CODE</span><strong id="lobby-code">------</strong><button id="lobby-copy-code" type="button" aria-label="Copy room code">▣</button></div>
-        <div class="lobby-actions"><button id="invite-room" class="button button--outline" type="button">♧ Invite Friends</button><button id="lobby-leave" class="button button--quiet" type="button">Leave Room</button></div>
-        <div class="lobby-roster-head"><span id="lobby-player-count">1 / 8 PLAYERS</span><span id="host-status">HOST: YOU</span></div>
-        <div id="lobby-team-list" class="lobby-team-list" aria-live="polite"></div>
-        <div class="lobby-controls"><button id="ready-toggle" class="button button--outline" type="button">Mark Ready</button><button id="start-game" class="button button--gold" type="button" disabled>Start Game →</button></div>
-        <p id="lobby-hint" class="lobby-hint" aria-live="polite">Waiting for a second detective to join.</p>
+    <section id="lobby-screen" class="lobby-screen hidden" aria-label="Victorian detective headquarters lobby">
+      <!-- Ambient Victorian Hearth & Gaslight Overlays -->
+      <div class="lobby-backdrop-glow" aria-hidden="true"></div>
+      <div class="lobby-hearth-lighting" aria-hidden="true"></div>
+
+      <!-- Synchronized Game Start Countdown Overlay -->
+      <div id="lobby-countdown-overlay" class="lobby-countdown-overlay hidden" aria-live="assertive" role="dialog" aria-modal="true" aria-label="Investigation starting countdown">
+        <div class="countdown-modal-frame">
+          <div class="countdown-watch-ornament" aria-hidden="true">
+            <div class="countdown-pocket-watch">
+              <div class="pocket-watch-ring"></div>
+              <div class="pocket-watch-face">
+                <div class="pocket-watch-hand hand-hour"></div>
+                <div class="pocket-watch-hand hand-min"></div>
+                <div class="pocket-watch-center-stud"></div>
+              </div>
+            </div>
+          </div>
+          <p class="countdown-eyebrow">221B BAKER STREET · CASE DEPARTURE</p>
+          <h2 class="countdown-title">THE GAME IS AFOOT</h2>
+          <div class="countdown-number-wrap">
+            <span id="lobby-countdown-number" class="countdown-number">3</span>
+          </div>
+          <p id="lobby-countdown-sub" class="countdown-sub">Stepping out into the fog of London...</p>
+        </div>
+      </div>
+
+      <div class="lobby-card headquarters-card">
+        <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+        <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+        <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+        <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+
+        <!-- Headquarters Main Header -->
+        <header class="lobby-header headquarters-header">
+          <div class="lobby-seal-crest" aria-hidden="true">
+            <svg viewBox="0 0 100 100" class="headquarters-crest-svg">
+              <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4 2"/>
+              <circle cx="50" cy="50" r="41" fill="none" stroke="currentColor" stroke-width="1"/>
+              <path d="M48 24c-6 0-11 5-11 11 0 3 1 6 3 8-1 1-3 3-3 6 0 4 3 7 7 8v4c-6 2-14 8-16 17h44c-2-9-10-15-16-17v-4c4-1 7-4 7-8 0-3-2-5-3-6 2-2 3-5 3-8 0-6-5-11-11-11z" fill="currentColor" opacity="0.9"/>
+              <path d="M38 52c-4 0-7 2-7 5 0 4 3 6 7 6h2v-11z" fill="currentColor" opacity="0.8"/>
+              <path d="M31 57c-6 0-9 4-9 8 0 5 4 8 9 8s9-3 9-8c0-3-2-5-4-6l-5-2z" fill="currentColor" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="lobby-header-text">
+            <div class="headquarters-kicker-row">
+              <span class="eyebrow">221B BAKER STREET · SCOTLAND YARD INCIDENT ROOM</span>
+              <span id="lobby-connection-status" class="headquarters-conn-pill">
+                <span class="conn-dot conn-dot--online" aria-hidden="true"></span>
+                <span>LINK: ONLINE</span>
+              </span>
+            </div>
+            <h1 class="lobby-title">THE DETECTIVES’ HEADQUARTERS</h1>
+            <p class="lobby-copy">Inspect your fellow sleuths, choose your field persona, and declare readiness. Sherlock Holmes awaits full preparation before the search begins.</p>
+          </div>
+        </header>
+
+        <!-- Error Banner Container for Room Connection Alerts -->
+        <div id="lobby-error-banner" class="lobby-error-banner hidden" role="alert" aria-live="assertive">
+          <span class="error-banner-icon">⚠</span>
+          <span id="lobby-error-text" class="error-banner-text">Room notice</span>
+        </div>
+
+        <!-- 2-Column Headquarters Grid: Left = Dispatch & Wardrobe, Right = Roster Dossier -->
+        <div class="headquarters-grid">
+
+          <!-- Left Column: Command & Field Registration -->
+          <div class="hq-col hq-col--briefing">
+
+            <!-- Framed Room Code Panel -->
+            <div class="lobby-code-card headquarters-code-panel" aria-label="Room telegraph code">
+              <div class="code-frame-header">
+                <span class="code-brass-rivet code-brass-rivet--tl" aria-hidden="true"></span>
+                <span class="code-brass-rivet code-brass-rivet--tr" aria-hidden="true"></span>
+                <span class="code-brass-tag">TELEGRAPH DISPATCH CODE</span>
+              </div>
+              <div class="code-display-row">
+                <div class="code-value-wrap">
+                  <span class="code-label">ROOM CODE</span>
+                  <strong id="lobby-code" class="lobby-code">------</strong>
+                </div>
+                <div class="code-actions-wrap">
+                  <button id="lobby-copy-code" class="button button--copy-code" type="button" aria-label="Copy room code" title="Copy room code">
+                    <span class="copy-glyph" aria-hidden="true">▣</span>
+                    <span class="copy-label">Copy Code</span>
+                  </button>
+                  <span id="lobby-copy-feedback" class="copy-feedback-toast hidden" aria-live="polite">✓ Copied!</span>
+                </div>
+              </div>
+              <div class="code-join-instructions">
+                <span>Direct your companions to enter code <strong id="lobby-code-hint">------</strong> via <strong>Join Existing Room</strong>.</span>
+              </div>
+            </div>
+
+            <!-- Mode Banner (Auto-updated or Mode Preview) -->
+            <div class="lobby-mode-banner headquarters-mode-banner" aria-label="Game Mode Detection">
+              <div id="mode-badge-coop" class="mode-badge mode-badge--coop is-active">
+                <span class="mode-badge__icon">⚖</span>
+                <div class="mode-badge__info">
+                  <strong>Cooperative Inquiry</strong>
+                  <small>2–3 Detectives · United Investigation</small>
+                </div>
+                <span class="mode-badge__tag">2–3 PLAYERS</span>
+              </div>
+              <div id="mode-badge-deduction" class="mode-badge mode-badge--deduction">
+                <span class="mode-badge__icon">🎭</span>
+                <div class="mode-badge__info">
+                  <strong>Hidden Culprit Hunt</strong>
+                  <small>4–8 Players · 1 Treacherous Insider</small>
+                </div>
+                <span class="mode-badge__tag">4–8 PLAYERS</span>
+              </div>
+            </div>
+
+            <!-- Character Selection Wardrobe Section -->
+            <section class="hq-wardrobe-section" aria-label="Detective Persona Selector">
+              <div class="hq-section-head">
+                <span class="section-crest-icon" aria-hidden="true">✦</span>
+                <h3 class="hq-section-title">CHOOSE YOUR DETECTIVE</h3>
+                <span id="wardrobe-lock-status" class="wardrobe-lock-badge hidden">🔒 LOCKED (READY)</span>
+              </div>
+              <p class="hq-section-sub">Select the investigator persona you will embody in London. Can be changed until you declare ready.</p>
+
+              <div id="lobby-character-selector" class="lobby-character-grid" role="radiogroup" aria-label="Select Detective Character">
+                <!-- 1. Sherlock Holmes -->
+                <button class="hq-character-chip is-selected" type="button" role="radio" aria-checked="true" data-char="boy" title="Sherlock Holmes - Master of Deduction">
+                  <span class="chip-portrait cameoboy">
+                    <svg viewBox="0 0 24 24" class="chip-portrait-svg" aria-hidden="true">
+                      <path fill="#f4d389" d="M12 2c2.8 0 5 2.2 5 5 0 1.8-.9 3.3-2.3 4.2.8.5 1.5 1.2 2 2.1 1.1 1.9.9 4.7.9 4.7H6.4s-.2-2.8.9-4.7c.5-.9 1.2-1.6 2-2.1C7.9 10.3 7 8.8 7 7c0-2.8 2.2-5 5-5zm-3 2a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1H9zm3 3a3 3 0 0 0-3 3c0 1.2.6 2.3 1.6 2.8l.4.2-.3.3c-.8.8-1.3 1.9-1.6 3.2h5.8c-.3-1.3-.8-2.4-1.6-3.2l-.3-.3.4-.2A3 3 0 0 0 15 10a3 3 0 0 0-3-3z"/>
+                    </svg>
+                  </span>
+                  <div class="chip-text">
+                    <strong class="chip-name">Sherlock Holmes</strong>
+                    <span class="chip-title">Consulting Detective</span>
+                    <span class="chip-desc">Master of observation, forensic deduction, and underworld tracking.</span>
+                  </div>
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                </button>
+
+                <!-- 2. Dr. John Watson -->
+                <button class="hq-character-chip" type="button" role="radio" aria-checked="false" data-char="watson" title="Dr. John Watson - Military Physician & Marksman">
+                  <span class="chip-portrait cameowatson">
+                    <svg viewBox="0 0 24 24" class="chip-portrait-svg" aria-hidden="true">
+                      <path fill="#f4d389" d="M12 2c2.8 0 5 2.2 5 5 0 1.8-.9 3.3-2.3 4.2.8.5 1.5 1.2 2 2.1 1.1 1.9.9 4.7.9 4.7H6.4s-.2-2.8.9-4.7c.5-.9 1.2-1.6 2-2.1C7.9 10.3 7 8.8 7 7c0-2.8 2.2-5 5-5zm-3 2a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1H9zm3 3a3 3 0 0 0-3 3c0 1.2.6 2.3 1.6 2.8l.4.2-.3.3c-.8.8-1.3 1.9-1.6 3.2h5.8c-.3-1.3-.8-2.4-1.6-3.2l-.3-.3.4-.2A3 3 0 0 0 15 10a3 3 0 0 0-3-3z"/>
+                    </svg>
+                  </span>
+                  <div class="chip-text">
+                    <strong class="chip-name">Dr. John Watson</strong>
+                    <span class="chip-title">Physician & Marksman</span>
+                    <span class="chip-desc">Military veteran, wound surgeon, and steadfast revolver in crises.</span>
+                  </div>
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                </button>
+
+                <!-- 3. Irene Adler -->
+                <button class="hq-character-chip" type="button" role="radio" aria-checked="false" data-char="girl" title="Irene Adler - The Velvet Operative">
+                  <span class="chip-portrait cameogirl">
+                    <svg viewBox="0 0 24 24" class="chip-portrait-svg" aria-hidden="true">
+                      <path fill="#f4d389" d="M12 2a5 5 0 0 1 5 5c0 1.9-.9 3.6-2.3 4.4.9.4 1.7 1.1 2.3 2.1 1.2 1.9 1 4.5 1 4.5H6s-.2-2.6 1-4.5c.6-1 1.4-1.7 2.3-2.1C7.9 10.6 7 8.9 7 7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3c0 1.2.6 2.3 1.6 2.8l.4.2-.3.3c-.8.8-1.4 1.9-1.6 3.2h5.8c-.2-1.3-.8-2.4-1.6-3.2l-.3-.3.4-.2A3.01 3.01 0 0 0 15 7a3 3 0 0 0-3-3z"/>
+                    </svg>
+                  </span>
+                  <div class="chip-text">
+                    <strong class="chip-name">Irene Adler</strong>
+                    <span class="chip-title">The Velvet Operative</span>
+                    <span class="chip-desc">Incomparable strategist, mistress of disguises, and quick infiltrator.</span>
+                  </div>
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                </button>
+
+                <!-- 4. Langdale Pike -->
+                <button class="hq-character-chip" type="button" role="radio" aria-checked="false" data-char="journalist" title="Langdale Pike - Fleet Street Informant">
+                  <span class="chip-portrait cameojournalist">
+                    <svg viewBox="0 0 24 24" class="chip-portrait-svg" aria-hidden="true">
+                      <path fill="#f4d389" d="M12 2c2.8 0 5 2.2 5 5 0 1.8-.9 3.3-2.3 4.2.8.5 1.5 1.2 2 2.1 1.1 1.9.9 4.7.9 4.7H6.4s-.2-2.8.9-4.7c.5-.9 1.2-1.6 2-2.1C7.9 10.3 7 8.8 7 7c0-2.8 2.2-5 5-5zm-3 2a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1H9zm3 3a3 3 0 0 0-3 3c0 1.2.6 2.3 1.6 2.8l.4.2-.3.3c-.8.8-1.3 1.9-1.6 3.2h5.8c-.3-1.3-.8-2.4-1.6-3.2l-.3-.3.4-.2A3 3 0 0 0 15 10a3 3 0 0 0-3-3z"/>
+                    </svg>
+                  </span>
+                  <div class="chip-text">
+                    <strong class="chip-name">Langdale Pike</strong>
+                    <span class="chip-title">Fleet St. Informant</span>
+                    <span class="chip-desc">Human archive of societal scandal, telegrams, and secret transactions.</span>
+                  </div>
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                </button>
+
+                <!-- 5. Inspector Lestrade -->
+                <button class="hq-character-chip" type="button" role="radio" aria-checked="false" data-char="officer" title="Inspector Lestrade - Scotland Yard Veteran">
+                  <span class="chip-portrait cameoofficer">
+                    <svg viewBox="0 0 24 24" class="chip-portrait-svg" aria-hidden="true">
+                      <path fill="#f4d389" d="M12 2c2.8 0 5 2.2 5 5 0 1.8-.9 3.3-2.3 4.2.8.5 1.5 1.2 2 2.1 1.1 1.9.9 4.7.9 4.7H6.4s-.2-2.8.9-4.7c.5-.9 1.2-1.6 2-2.1C7.9 10.3 7 8.8 7 7c0-2.8 2.2-5 5-5zm-3 2a1 1 0 0 0-1 1v1h8V5a1 1 0 0 0-1-1H9zm3 3a3 3 0 0 0-3 3c0 1.2.6 2.3 1.6 2.8l.4.2-.3.3c-.8.8-1.3 1.9-1.6 3.2h5.8c-.3-1.3-.8-2.4-1.6-3.2l-.3-.3.4-.2A3 3 0 0 0 15 10a3 3 0 0 0-3-3z"/>
+                    </svg>
+                  </span>
+                  <div class="chip-text">
+                    <strong class="chip-name">Insp. G. Lestrade</strong>
+                    <span class="chip-title">Scotland Yard Chief</span>
+                    <span class="chip-desc">Tenacious field officer armed with Yard warrants and constabulary cordons.</span>
+                  </div>
+                  <span class="chip-check" aria-hidden="true">✓</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- Readiness Progress & Status Banner -->
+            <div class="hq-readiness-card">
+              <div class="readiness-progress-row">
+                <span class="readiness-progress-label">TEAM READINESS</span>
+                <span id="lobby-readiness-percent" class="readiness-progress-val">0 / 0 Ready</span>
+              </div>
+              <div class="readiness-progress-bar">
+                <div id="lobby-readiness-fill" class="readiness-progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Waiting State Banner / Hint -->
+            <div class="lobby-status-banner headquarters-status-banner">
+              <div class="status-banner-icon" aria-hidden="true">⌛</div>
+              <p id="lobby-hint" class="lobby-hint" aria-live="polite">Waiting for a second detective to join.</p>
+            </div>
+
+            <!-- Controls: READY TOGGLE & START INVESTIGATION (Prioritized Hierarchy) -->
+            <div class="lobby-controls headquarters-controls">
+              <button id="ready-toggle" class="button button--outline button--ready-toggle" type="button">
+                <span class="btn-ready-icon" aria-hidden="true">✦</span>
+                <span class="btn-ready-text">Declare Ready</span>
+              </button>
+              <button id="start-game" class="button button--gold button--start-investigation" type="button" disabled>
+                <span class="btn-start-text">Launch Investigation</span>
+                <span class="btn-start-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+
+            <p id="lobby-start-requirement-hint" class="hq-start-requirement-hint" aria-live="polite"></p>
+
+            <div class="lobby-actions headquarters-secondary-actions">
+              <button id="invite-room" class="button button--outline button--sm" type="button">
+                <span>♧ Share Invitation</span>
+              </button>
+              <button id="lobby-leave" class="button button--quiet button--sm button--leave-room" type="button">
+                <span>Leave Headquarters</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Assembled Detective Roster Dossier -->
+          <div class="hq-col hq-col--roster">
+            <div class="hq-roster-dossier-frame">
+              <div class="dossier-wood-trim" aria-hidden="true">
+                <span class="brass-tack brass-tack--tl"></span>
+                <span class="brass-tack brass-tack--tr"></span>
+                <span class="brass-tack brass-tack--bl"></span>
+                <span class="brass-tack brass-tack--br"></span>
+              </div>
+
+              <div class="lobby-roster-head headquarters-roster-head">
+                <div class="roster-head-left">
+                  <span class="roster-icon" aria-hidden="true">👥</span>
+                  <span id="lobby-player-count">1 / 8 ASSEMBLED</span>
+                </div>
+                <div class="roster-head-right">
+                  <span id="host-status" class="host-status-badge">CHIEF INVESTIGATOR: YOU</span>
+                </div>
+              </div>
+
+              <div class="hq-roster-instructions">
+                <span>Every chair represents an assigned investigator. Up to 8 detectives can sit in council.</span>
+              </div>
+
+              <!-- Dedicated 8-Slot Team Roster -->
+              <div id="lobby-team-list" class="lobby-team-list headquarters-team-list" aria-live="polite"></div>
+
+              <!-- Live Headquarters Telegrams / Feed -->
+              <div class="hq-dispatch-ticker">
+                <div class="ticker-header">
+                  <span class="ticker-dot"></span>
+                  <span class="ticker-title">HEADQUARTERS DISPATCH LOG</span>
+                </div>
+                <div id="hq-dispatch-log" class="ticker-body">
+                  <p class="ticker-line">Awaiting telegram from Baker Street...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
     <div id="game-grid" class="game-grid hidden">
       <section class="map-panel" aria-label="London map">
-        <div class="map-heading">
+        <div class="map-heading sr-only">
           <div><p class="eyebrow">A FOGBOUND DISTRICT</p><h2 id="map-title">Waiting Room</h2></div>
-          <div id="player-count" class="player-count">0 / 8 PLAYERS</div>
         </div>
-        <div class="map-wrap"><canvas id="world-3d" aria-hidden="true"></canvas><canvas id="map" aria-label="Third-person view of Victorian London with interactive clue stations and detectives"></canvas><div id="map-toast" class="map-toast" aria-live="polite"></div></div>
-        <div class="map-legend"><span><i class="legend-dot legend-dot--you"></i> YOU</span><span><i class="legend-dot legend-dot--detective"></i> TEAM</span><span><i class="legend-dot legend-dot--unknown"></i> UNKNOWN ROLE</span><span class="map-legend__hint">MOVE: WASD / ARROWS · LOOK: DRAG</span></div>
-        <div class="controls-row">
-          <div class="dpad" aria-label="Touch movement controls">
-            <button class="dpad__up" data-dir="up" aria-label="Move north">▲</button>
-            <button class="dpad__left" data-dir="left" aria-label="Move west">◀</button>
-            <button class="dpad__down" data-dir="down" aria-label="Move south">▼</button>
-            <button class="dpad__right" data-dir="right" aria-label="Move east">▶</button>
+        <div class="map-wrap">
+          <canvas id="world-3d" aria-hidden="true"></canvas>
+          <canvas id="map" aria-label="Third-person view of Victorian London with interactive clue stations and detectives"></canvas>
+
+          <!-- Upper-Left HUD: Circular Compass Minimap, Location badge & Current Objectives -->
+          <div class="hud-upper-left">
+            <div id="compass-minimap" class="compass-minimap" aria-label="District Compass Minimap">
+              <div class="compass-bezel"></div>
+              <div class="compass-grid">
+                <div class="compass-crosshair compass-crosshair--h"></div>
+                <div class="compass-crosshair compass-crosshair--v"></div>
+                <div class="compass-ring-inner"></div>
+                <div class="compass-street-lines" aria-hidden="true"></div>
+                <div id="compass-objective-dot" class="compass-dot compass-dot--objective"></div>
+                <div id="compass-player-dot" class="compass-dot compass-dot--player"></div>
+              </div>
+              <div id="compass-needle" class="compass-needle">
+                <span class="needle-tip needle-tip--north">N</span>
+                <span class="needle-tip needle-tip--south">S</span>
+              </div>
+              <span class="compass-cardinal compass-cardinal--n">N</span>
+              <span class="compass-cardinal compass-cardinal--e">E</span>
+              <span class="compass-cardinal compass-cardinal--s">S</span>
+              <span class="compass-cardinal compass-cardinal--w">W</span>
+            </div>
+            <div id="hud-location-badge" class="hud-location-badge" aria-label="Current district location">
+              <span class="hud-location-pin" aria-hidden="true">📍</span>
+              <span id="hud-location-name">221B BAKER STREET</span>
+            </div>
+            <div id="hud-objectives" class="hud-objectives" aria-label="Current active investigation objectives">
+              <div class="hud-objectives__head">
+                <span class="hud-objectives__diamond" aria-hidden="true">◆</span>
+                <span id="hud-objective-category">YOUR MISSION</span>
+              </div>
+              <div class="hud-objective-body">
+                <h3 id="hud-objective-main" class="hud-objective-main">Find the missing portrait pieces.</h3>
+                <p id="hud-objective-sub" class="hud-objective-sub">Explore London and follow the golden markers.</p>
+                <div id="hud-objective-nav" class="hud-objective-nav">
+                  <span class="nav-compass-glyph" aria-hidden="true">🧭</span>
+                  <span id="hud-nav-instruction">Follow the golden marker</span>
+                </div>
+              </div>
+              <ul id="hud-objectives-list" class="hud-objectives-list sr-only">
+                <li><span class="hud-bullet">◆</span><span>Find the missing portrait pieces</span></li>
+                <li><span class="hud-bullet">◇</span><span>Explore London and follow the golden markers</span></li>
+              </ul>
+            </div>
           </div>
-          <div class="control-prompt"><span id="interaction-keycap" class="keycap">E</span><span id="interaction-hint">Stand near a marked station to investigate.</span></div>
-          <button id="interact" class="button button--interact" disabled><span>◎</span> Investigate</button>
-          <button id="role-action" class="button button--danger hidden" disabled>Interfere</button>
+
+          <!-- Upper-Right HUD: Real player count, connection status, casebook control -->
+          <div class="hud-upper-right" role="toolbar" aria-label="Investigation status & tools">
+            <div class="hud-status-chip">
+              <span class="conn-dot conn-dot--online" aria-hidden="true"></span>
+              <span id="connection-state">ONLINE</span>
+            </div>
+            <div id="hud-player-chip" class="hud-status-chip">
+              <span class="hud-chip-icon" aria-hidden="true">👥</span>
+              <span id="player-count">1 / 8 DETECTIVES</span>
+            </div>
+            <button id="open-casebook" class="button button--hud-action" type="button" aria-label="Open Casebook (Tab or J)">
+              <span class="hud-btn-glyph" aria-hidden="true">📖</span>
+              <span>Casebook</span>
+              <kbd class="hud-kbd">Tab</kbd>
+            </button>
+            <button id="open-pause-menu" class="button button--hud-action" type="button" aria-label="Pause and settings (Esc)">
+              <span class="hud-btn-glyph" aria-hidden="true">⚙</span>
+              <span>Pause</span>
+              <kbd class="hud-kbd">Esc</kbd>
+            </button>
+          </div>
+
+          <!-- Center HUD: Clear Contextual Interaction Prompt -->
+          <div id="hud-interaction-card" class="hud-interaction-card" aria-live="polite">
+            <div class="control-prompt">
+              <span class="prompt-badge">INVESTIGATE</span>
+              <span id="interaction-keycap" class="keycap">E</span>
+              <span id="interaction-hint">Press E to examine</span>
+            </div>
+          </div>
+
+          <!-- Tension Chase Vignette Overlay -->
+          <div id="chase-vignette" class="chase-vignette hidden" aria-hidden="true"></div>
+
+          <!-- Satisfying Victorian Evidence Unlock Stamp Overlay -->
+          <div id="evidence-unlock-overlay" class="evidence-unlock-overlay hidden" aria-live="polite">
+            <div class="evidence-unlock-frame">
+              <div class="evidence-wax-seal" aria-hidden="true">
+                <span class="seal-icon">🔏</span>
+                <span class="seal-ring"></span>
+              </div>
+              <div class="evidence-unlock-meta">
+                <span class="evidence-unlock-eyebrow">✦ EVIDENCE SECURED & LODGED ✦</span>
+                <h3 id="evidence-unlock-title" class="evidence-unlock-title">Forensic Clue Secured</h3>
+                <span id="evidence-unlock-badge" class="evidence-unlock-badge">EXHIBIT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cinematic Reunion Celebration Banner -->
+          <div id="cinematic-reunion-banner" class="cinematic-reunion-banner hidden" aria-live="assertive">
+            <div class="cinematic-banner-frame">
+              <span class="cinematic-crest" aria-hidden="true">🏛</span>
+              <div class="cinematic-text-wrap">
+                <h3 class="cinematic-title">ALL INVESTIGATORS ASSEMBLED</h3>
+                <p class="cinematic-sub">The thief is in custody at Blackthorn Safehouse. The final case can now be closed.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lower-Left HUD: Responsive virtual joystick (mobile) & Desktop controls reminder -->
+          <div class="hud-lower-left">
+            <div id="virtual-joystick" class="virtual-joystick" role="group" aria-label="Touch movement joystick">
+              <div class="joystick-ring"><div id="joystick-thumb" class="joystick-thumb"></div></div>
+              <span class="joystick-label">MOVE</span>
+            </div>
+            <div class="desktop-controls-legend" aria-hidden="true">
+              <span class="legend-key">WASD</span><span class="legend-text">Move</span>
+              <span class="legend-sep">·</span>
+              <span class="legend-key">Drag</span><span class="legend-text">Look</span>
+            </div>
+          </div>
+
+          <!-- Floating 3D Gold Beacon Distance Pill Overlay (matching Panel 2 art reference) -->
+          <div id="hud-beacon-distance" class="hud-beacon-distance hidden" aria-live="polite">
+            <span class="beacon-pin-icon" aria-hidden="true">📍</span>
+            <span id="beacon-meters">128 m</span>
+          </div>
+
+          <!-- Lower-Right HUD: Interaction and action buttons (matching Panel 2) -->
+          <div class="hud-lower-right">
+            <div class="mobile-action-group">
+              <button id="mobile-sprint-btn" class="mobile-action-circle mobile-action-circle--sprint" type="button" aria-label="Sprint (Shift)">
+                <span class="mobile-circle-icon" aria-hidden="true">🏃</span>
+              </button>
+              <button id="mobile-examine-btn" class="mobile-action-circle mobile-action-circle--examine" type="button" aria-label="Examine (E)">
+                <span class="mobile-circle-icon" aria-hidden="true">🔍</span>
+              </button>
+            </div>
+            <button id="interact" class="button button--hud-interact" disabled>
+              <span class="action-glyph">🔍</span>
+              <span class="action-label">Investigate</span>
+            </button>
+            <button id="role-action" class="button button--hud-danger hidden" disabled>Interfere</button>
+          </div>
+
+          <div id="map-toast" class="map-toast" aria-live="polite"></div>
         </div>
       </section>
 
-      <aside class="side-panel">
+      <aside id="side-panel" class="side-panel">
+        <button id="close-casebook" class="casebook-drawer-close" type="button" aria-label="Close Casebook">×</button>
         <section id="phase-card" class="panel-card phase-card">
-          <div class="panel-card__head"><p class="eyebrow">HOLMES’S CASE</p><span id="round-counter" class="count-chip">ROUND 1 / 3</span><span id="phase-pill" class="phase-pill">WAITING</span></div>
+          <div class="panel-card__head"><p class="eyebrow">COOPERATIVE CASE</p><span id="round-counter" class="count-chip">PORTRAIT 0 / 6</span><span id="phase-pill" class="phase-pill">WAITING</span></div>
           <h2 id="phase-title">The waiting room</h2>
-          <p id="phase-copy">Everyone marks ready. The host starts once at least two connected players are ready.</p>
-          <div id="role-card" class="role-card hidden"><span id="role-kicker" class="eyebrow">PRIVATE ROLE</span><strong id="role-name">DETECTIVE</strong><p id="role-secret"></p></div>
+          <p id="phase-copy">Mark yourself ready. Explore London together, solve mini-games, and recover all 6 portrait pieces.</p>
+          <div id="role-card" class="role-card hidden" style="display: none !important;"><span id="role-kicker" class="eyebrow">PRIVATE ROLE</span><strong id="role-name">DETECTIVE</strong><p id="role-secret"></p></div>
           <p id="start-hint" class="start-hint" aria-live="polite"></p>
         </section>
 
         <section class="panel-card objective-card">
-          <div class="panel-card__head"><p class="eyebrow">YOUR NEXT LEAD</p><span id="objective-icon" class="objective-icon">✧</span></div>
-          <h3 id="objective-title">Gather the team</h3>
-          <p id="objective-copy">Invite one or more friends to join the case.</p>
+          <div class="panel-card__head"><p class="eyebrow">YOUR MISSION</p><span id="objective-icon" class="objective-icon">✧</span></div>
+          <h3 id="objective-title">Find the missing portrait pieces</h3>
+          <p id="objective-copy">Explore London and follow the golden markers.</p>
           <div id="mission-list" class="mission-list hidden"></div>
         </section>
 
         <section class="panel-card journal-card">
-          <div class="panel-card__head"><p class="eyebrow">WATSON’S CASEBOOK</p><span id="clue-count" class="count-chip">0 CLUES</span></div>
-          <div id="clue-list" class="clue-list"><p class="empty-note">No evidence yet. The team’s findings will appear here.</p></div>
+          <div class="casebook-tabs" role="tablist" aria-label="Casebook sections">
+            <button class="casebook-tab is-active" type="button" role="tab" aria-selected="true" data-tab="mission">Mission</button>
+            <button class="casebook-tab" type="button" role="tab" aria-selected="false" data-tab="pieces">Collected Pieces</button>
+            <button class="casebook-tab" type="button" role="tab" aria-selected="false" data-tab="map">Map</button>
+          </div>
+          <div class="panel-card__head"><p class="eyebrow">WATSON’S CASEBOOK</p><span id="clue-count" class="count-chip">0 / 6 PIECES</span></div>
+          <div id="clue-list" class="clue-list corkboard-style"><p class="empty-note">No portrait pieces recovered yet. Follow the golden markers to find clues.</p></div>
         </section>
 
         <section class="panel-card team-card">
@@ -159,57 +747,1215 @@
           <div class="trap-actions"><button id="trap-lever" class="button button--outline" type="button">1 · Pull lever</button><button id="trap-valve" class="button button--outline" type="button">2 · Turn valve</button><button id="trap-key" class="button button--outline" type="button">3 · Insert key</button></div>
         </section>
 
-        <section id="vote-card" class="panel-card vote-card hidden">
-          <div class="panel-card__head"><p class="eyebrow">COMPARE SUSPICIONS</p><span class="vote-sigil">§</span></div>
-          <p id="vote-copy">Two clues are on the board. Cast one investigation vote.</p>
-          <div class="vote-row"><select id="vote-target" aria-label="Choose an investigation suspect"></select><button id="vote-submit" class="button button--outline">Vote</button></div>
+        <section id="reunion-card" class="panel-card reunion-card hidden" aria-live="polite">
+          <div class="panel-card__head">
+            <p class="eyebrow">BLACKTHORN SAFEHOUSE · FINAL REUNION</p>
+            <span id="reunion-progress" class="count-chip">0 / 0 REUNITED</span>
+          </div>
+          <h3 id="reunion-title">Assemble at Safehouse</h3>
+          <p id="reunion-copy">The thief is in custody! Every connected investigator and the captured thief must reach Blackthorn Safehouse door to conclude the case.</p>
+          <div id="reunion-status-list" class="reunion-status-list" role="list"></div>
+          <div id="reunion-complete-banner" class="reunion-complete-banner hidden">
+            <span class="reunion-complete-icon" aria-hidden="true">✓</span>
+            <span id="reunion-complete-text">All participants assembled! Press <strong>E</strong> or tap <strong>Examine</strong> at the door to close the case.</span>
+          </div>
+        </section>
+
+        <section id="vote-card" class="panel-card vote-card hidden" aria-labelledby="vote-title">
+          <div class="interrogation-candle-glow" aria-hidden="true"></div>
+
+          <div class="panel-card__head interrogation-head">
+            <p class="eyebrow"><span class="eyebrow-accent">✦</span> SCOTLAND YARD · FORMAL INQUIRY <span class="eyebrow-accent">✦</span></p>
+            <span class="vote-sigil" title="Official Inquiry Seal">⚖</span>
+          </div>
+
+          <div class="interrogation-masthead">
+            <h2 id="vote-title" class="vote-heading">Who is the Culprit?</h2>
+            <div class="interrogation-divider" aria-hidden="true"><span class="interrogation-diamond">◆</span></div>
+            <p id="vote-copy" class="vote-copy">Two or more verified clues are on the board. Review the evidence table, confer with your fellow detectives, and cast one formal accusation.</p>
+          </div>
+
+          <!-- Discovered Evidence Table (Pinned exhibits & observations) -->
+          <div id="vote-evidence-table" class="vote-evidence-table" aria-label="Evidence Table">
+            <div class="evidence-table-head">
+              <span class="evidence-table-title"><span class="candle-icon">🕯</span> EVIDENCE LODGED ON THE TABLE</span>
+              <span id="vote-evidence-count" class="evidence-table-count">0 CLUES VERIFIED</span>
+            </div>
+            <div id="vote-evidence-list" class="vote-evidence-list" role="list">
+              <!-- Dynamically populated with real discovered clues -->
+            </div>
+          </div>
+
+          <!-- Culprit Private Notification (visible ONLY to the culprit) -->
+          <div id="vote-culprit-notice" class="vote-culprit-notice hidden" role="alert">
+            <span class="culprit-skull-icon" aria-hidden="true">☠</span>
+            <div class="culprit-notice-text">
+              <strong>YOUR SECRET ROLE: THE CULPRIT</strong>
+              <p>You cannot cast an accusation in this inquiry. Mislead detectives in discussion, cast doubt on the evidence, and prevent a unanimous consensus.</p>
+            </div>
+          </div>
+
+          <!-- Real Suspect Cards Gallery -->
+          <div class="suspect-gallery-section">
+            <div class="suspect-gallery-header">
+              <span class="suspect-gallery-title">PERSONS OF INTEREST</span>
+              <span id="suspect-gallery-hint" class="suspect-gallery-hint">Select a suspect card to record your accusation</span>
+            </div>
+            <div id="suspect-gallery" class="suspect-gallery" role="group" aria-label="Suspect portraits"></div>
+          </div>
+
+          <!-- Real Countdown Timer (shown ONLY when an authoritative server deadline exists) -->
+          <div id="vote-countdown-wrap" class="vote-countdown-wrap hidden" aria-label="Voting countdown">
+            <div class="vote-countdown-label">
+              <span>DELIBERATION CLOSES IN <strong id="vote-timer-seconds">--:--</strong></span>
+              <span class="vote-unanimous-note">UNANIMOUS AGREEMENT REQUIRED</span>
+            </div>
+            <div class="vote-countdown-track">
+              <div id="vote-countdown-bar" class="vote-countdown-bar"></div>
+            </div>
+          </div>
+
+          <!-- Accessible / Fallback Controls -->
+          <div class="vote-row">
+            <select id="vote-target" aria-label="Choose an investigation suspect"></select>
+            <button id="vote-submit" class="button button--outline">Vote</button>
+          </div>
+
+          <!-- Server Authoritative Result / Outcome Display -->
+          <div id="vote-outcome-card" class="vote-outcome-card hidden" aria-live="polite">
+            <div id="vote-outcome-badge" class="vote-outcome-badge">DELIBERATION CONCLUDED</div>
+            <h3 id="vote-outcome-headline" class="vote-outcome-headline">Consensus Reached</h3>
+            <p id="vote-outcome-description" class="vote-outcome-description"></p>
+            <div id="vote-tally-list" class="vote-tally-list"></div>
+          </div>
+
           <p id="vote-result" class="vote-result"></p>
         </section>
 
-        <section id="result-card" class="panel-card result-card hidden">
-          <div class="panel-card__head"><p class="eyebrow">CASE CLOSED</p><span id="result-stamp" class="result-stamp">SOLVED</span></div>
-          <h2 id="result-title">The truth comes to light.</h2>
-          <p id="result-copy"></p>
-          <p id="result-truth" class="result-truth"></p>
-          <p id="round-score" class="round-score"></p>
-          <ol id="scoreboard" class="scoreboard" aria-label="Tournament scoreboard"></ol>
-          <button id="rematch" class="button button--gold button--full hidden">Next round <span>→</span></button>
+        <section id="result-card" class="panel-card result-card hidden" aria-labelledby="result-title">
+          <div class="result-candle-glow" aria-hidden="true"></div>
+
+          <!-- Newspaper / Gazette Masthead Banner -->
+          <div class="newspaper-headline" aria-hidden="true">
+            <div class="newspaper-masthead">THE DAILY TELEGRAPH · LONDON EXTRAORDINARY EDITION</div>
+            <div id="newspaper-banner" class="newspaper-banner">CAPTURED!</div>
+            <div class="newspaper-sub">THE BAKER STREET CONSULTING DETECTIVES CLOSE THE INQUIRY</div>
+          </div>
+
+          <!-- Case Header & Authoritative Outcome Stamp -->
+          <div class="panel-card__head result-panel-head">
+            <p id="result-kicker" class="eyebrow"><span class="eyebrow-accent">✦</span> SCOTLAND YARD FINAL REPORT <span class="eyebrow-accent">✦</span></p>
+            <span id="result-stamp" class="result-stamp result-stamp--solved">SOLVED</span>
+          </div>
+
+          <div class="resolution-title-block">
+            <h2 id="result-title" class="resolution-title">CASE SOLVED</h2>
+            <div class="resolution-divider" aria-hidden="true"><span class="resolution-diamond">◆</span></div>
+            <p id="result-copy" class="resolution-copy"></p>
+          </div>
+
+          <!-- Reason for Failure (Defeat only) -->
+          <div id="result-failure-box" class="result-failure-box hidden" role="alert">
+            <div class="failure-icon" aria-hidden="true">⚠️</div>
+            <div class="failure-content">
+              <strong id="failure-headline" class="failure-headline">CAUSE OF FAILURE</strong>
+              <p id="failure-explanation" class="failure-explanation"></p>
+            </div>
+          </div>
+
+          <!-- 2-Column Dossier Grid: Left = Canon Truth & Culprit/Ledger Dossier, Right = Evidence & Performance -->
+          <div class="resolution-dossier-grid">
+            <!-- Left Column: The Historical Truth Revealed -->
+            <div class="resolution-dossier-col resolution-dossier-col--truth">
+              <div class="dossier-subhead">
+                <span class="dossier-icon">📜</span>
+                <span>BAKER STREET CANONICAL TRUTH</span>
+              </div>
+              <div class="truth-parchment">
+                <p id="result-truth" class="result-truth"></p>
+              </div>
+
+              <!-- Culprit / Ledger Placard -->
+              <div id="result-suspect-placard" class="result-suspect-placard">
+                <div class="placard-frame">
+                  <span id="placard-badge" class="placard-badge">CAPTURED</span>
+                  <div id="placard-avatar" class="placard-avatar">
+                    <svg viewBox="0 0 24 24" class="placard-silhouette" aria-hidden="true">
+                      <path fill="currentColor" d="M12 2c2.8 0 5 2.2 5 5 0 1.8-.9 3.3-2.3 4.2.8.5 1.5 1.2 2 2.1 1.1 1.9.9 4.7.9 4.7H6.4s-.2-2.8.9-4.7c.5-.9 1.2-1.6 2-2.1C7.9 10.3 7 8.8 7 7c0-2.8 2.2-5 5-5z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="placard-info">
+                  <span class="placard-sub">ACCUSED TRAITOR</span>
+                  <strong id="placard-name" class="placard-name">Inspector Elias Vale</strong>
+                  <p id="placard-desc" class="placard-desc">Identified and cornered at the Blackthorn Safehouse.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Evidence Summary & Personal Tracked Contribution -->
+            <div class="resolution-dossier-col resolution-dossier-col--performance">
+              <div class="dossier-subhead">
+                <span class="dossier-icon">🔍</span>
+                <span>EVIDENCE SUMMARY & CONTRIBUTIONS</span>
+              </div>
+
+              <!-- Verified Exhibits List -->
+              <div id="result-evidence-summary" class="result-evidence-summary" role="list">
+                <!-- Dynamically populated with verified clue chips -->
+              </div>
+
+              <!-- Personal Tracked Contribution Card -->
+              <div class="personal-dossier-card">
+                <div class="personal-dossier-head">
+                  <span class="personal-label">YOUR INVESTIGATION CONTRIBUTION</span>
+                  <span id="personal-points-badge" class="personal-points-badge">+0 PTS</span>
+                </div>
+                <p id="round-score" class="round-score"></p>
+                <div id="personal-notes-list" class="personal-notes-list"></div>
+              </div>
+
+              <!-- Case Rewards Bar -->
+              <div class="case-rewards-bar" aria-label="Case rewards">
+                <div class="reward-pill"><span class="reward-icon">★</span><strong id="reward-xp">+350 XP</strong><small>Deduction</small></div>
+                <div class="reward-pill"><span class="reward-icon">£</span><strong id="reward-bounty">125 £</strong><small>Yard Bounty</small></div>
+                <div class="reward-pill"><span class="reward-icon">🎖</span><strong id="reward-badge">TRUTH SEEKER</strong><small>Honor Badge</small></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tournament Scoreboard Across Rounds -->
+          <div class="tournament-standings-section">
+            <div class="standings-header">
+              <span class="standings-title">🏆 TOURNAMENT SCOREBOARD</span>
+              <span id="standings-round-label" class="standings-round-label">ROUND 1 OF 3</span>
+            </div>
+            <ol id="scoreboard" class="scoreboard" aria-label="Tournament scoreboard"></ol>
+          </div>
+
+          <!-- Action Buttons: Next Round (Host) / Return to Lobby / Main Menu -->
+          <div class="resolution-actions-bar">
+            <button id="rematch" class="button button--gold button--full button--rematch-action hidden">Next round <span>→</span></button>
+            <div id="waiting-host-box" class="waiting-host-notice hidden">
+              <span>⏳ Waiting for room host to initiate the next round…</span>
+            </div>
+            <div class="resolution-sub-actions">
+              <button id="result-return-lobby" class="button button--outline" type="button">Return to Lobby</button>
+              <button id="result-main-menu" class="button button--quiet" type="button">Main Menu</button>
+            </div>
+          </div>
         </section>
       </aside>
     </div>
     <footer id="bottom-drawer" class="bottom-drawer hidden">
-      <div class="story-log"><div class="panel-card__head"><p class="eyebrow">BAKER STREET TELEGRAMS</p><span id="connection-state" class="connection-state">CONNECTING</span></div><div id="event-list" class="event-list" aria-live="polite"></div></div>
+      <div class="story-log"><div class="panel-card__head"><p class="eyebrow">BAKER STREET TELEGRAMS</p><span id="telegrams-connection-state" class="connection-state">CONNECTING</span></div><div id="event-list" class="event-list" aria-live="polite"></div></div>
       <form id="chat-form" class="chat-form"><label for="chat-input" class="eyebrow">SEND A TELEGRAM TO THE DETECTIVES</label><div class="chat-form__row"><input id="chat-input" maxlength="180" placeholder="Share your deduction…" autocomplete="off"><button class="button button--outline" type="submit" aria-label="Send message">Send ↗</button></div><div id="chat-list" class="chat-list" aria-live="polite"></div></form>
     </footer>
     <div id="game-error" class="game-error" role="alert" aria-live="polite"></div>
   </main>
 
   <div id="settings-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-    <section class="modal-card settings-card"><button id="settings-close" class="modal-close" aria-label="Close settings">×</button><p class="eyebrow">CASEBOOK PREFERENCES</p><h2 id="settings-title">Settings</h2><label class="setting-row"><input id="reduce-motion" type="checkbox"><span><b>Reduce motion</b><small>Soften animated rain, fog, and transitions.</small></span></label><button id="settings-done" class="button button--gold button--full" type="button">Done</button></section>
+    <section class="modal-card settings-card pause-settings-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <div class="settings-wax-seal" aria-hidden="true"><span>⚙</span></div>
+
+      <button id="settings-close" class="modal-close" aria-label="Close settings">×</button>
+
+      <div class="settings-header">
+        <p id="settings-kicker" class="eyebrow"><span class="eyebrow-accent">✦</span> CASEBOOK PREFERENCES & FIELD SETTINGS <span class="eyebrow-accent">✦</span></p>
+        <h2 id="settings-title" class="settings-title">Investigation Settings</h2>
+        <div class="settings-divider" aria-hidden="true"><span class="settings-diamond">◆</span></div>
+      </div>
+
+      <div class="settings-content-scroller">
+        <!-- Audio & Soundscape Section -->
+        <fieldset class="settings-group">
+          <legend class="settings-group__legend">
+            <span class="settings-legend-icon" aria-hidden="true">🔊</span>
+            <span>AUDIO & SOUNDSCAPE</span>
+          </legend>
+
+          <label class="setting-row setting-row--toggle">
+            <div class="setting-text">
+              <span class="setting-name">Atmospheric Audio</span>
+              <small class="setting-desc">Procedural rain on cobblestones and distant city winds.</small>
+            </div>
+            <input id="ambient-audio" type="checkbox" class="toggle-checkbox">
+          </label>
+
+          <div class="setting-row setting-row--slider">
+            <div class="setting-text">
+              <div class="setting-name-row">
+                <span class="setting-name">Atmosphere Volume</span>
+                <span id="ambient-volume-val" class="setting-value-badge">70%</span>
+              </div>
+              <small class="setting-desc">Ambient rain and wind intensity.</small>
+            </div>
+            <input id="ambient-volume" type="range" min="0" max="100" step="5" value="70" class="vintage-slider" aria-label="Atmosphere Volume">
+          </div>
+        </fieldset>
+
+        <!-- Display & Visual Fidelity Section -->
+        <fieldset class="settings-group">
+          <legend class="settings-group__legend">
+            <span class="settings-legend-icon" aria-hidden="true">🕯</span>
+            <span>DISPLAY & PERFORMANCE</span>
+          </legend>
+
+          <div class="setting-row setting-row--select">
+            <div class="setting-text">
+              <span class="setting-name">Graphics Quality</span>
+              <small class="setting-desc">Controls 3D rendering resolution and shadow detail.</small>
+            </div>
+            <select id="graphics-quality" class="vintage-select" aria-label="Graphics Quality">
+              <option value="high">High (Full Shadows & Rain)</option>
+              <option value="medium">Medium (Balanced Fidelity)</option>
+              <option value="low">Low (Optimized Performance)</option>
+            </select>
+          </div>
+
+          <label class="setting-row setting-row--toggle">
+            <div class="setting-text">
+              <span class="setting-name">Reduce Motion</span>
+              <small class="setting-desc">Soften rain velocity, mist drifting, and interface sway.</small>
+            </div>
+            <input id="reduce-motion" type="checkbox" class="toggle-checkbox">
+          </label>
+        </fieldset>
+
+        <!-- Controls & Camera Perspective Section -->
+        <fieldset class="settings-group">
+          <legend class="settings-group__legend">
+            <span class="settings-legend-icon" aria-hidden="true">🧭</span>
+            <span>CONTROLS & PERSPECTIVE</span>
+          </legend>
+
+          <div class="setting-row setting-row--slider">
+            <div class="setting-text">
+              <div class="setting-name-row">
+                <span class="setting-name">Camera Look Sensitivity</span>
+                <span id="camera-sensitivity-val" class="setting-value-badge">1.0x</span>
+              </div>
+              <small class="setting-desc">Mouse drag and touch rotation speed in London.</small>
+            </div>
+            <input id="camera-sensitivity" type="range" min="0.5" max="2.5" step="0.1" value="1.0" class="vintage-slider" aria-label="Camera Look Sensitivity">
+          </div>
+
+          <label class="setting-row setting-row--toggle">
+            <div class="setting-text">
+              <span class="setting-name">Control Hints & Guides</span>
+              <small class="setting-desc">Show on-screen movement keys and interaction prompts.</small>
+            </div>
+            <input id="control-hints" type="checkbox" class="toggle-checkbox" checked>
+          </label>
+        </fieldset>
+
+        <!-- Primary Resume / Done Button -->
+        <div class="settings-primary-actions">
+          <button id="settings-resume" class="button button--gold button--full button--resume-investigation" type="button">
+            <span>Resume Investigation</span>
+            <span class="action-arrow">→</span>
+          </button>
+          <button id="settings-done" class="button button--gold button--full hidden" type="button">Done</button>
+        </div>
+
+        <!-- Clearly Separated Leave Game Section (Active session only) -->
+        <div id="settings-leave-container" class="settings-leave-container hidden">
+          <div class="leave-warning-divider">
+            <span>CASE WITHDRAWAL</span>
+          </div>
+
+          <div id="pause-leave-initial" class="pause-leave-initial">
+            <button id="pause-leave-btn" class="button button--quiet button--pause-leave" type="button">
+              <span>Abandon Investigation & Leave Room</span>
+            </button>
+          </div>
+
+          <div id="pause-leave-confirm" class="pause-leave-confirm hidden" role="alert">
+            <p class="leave-confirm-text">Are you sure you wish to withdraw from this case? Your seat and progress in the room will be surrendered.</p>
+            <div class="leave-confirm-actions">
+              <button id="pause-confirm-leave" class="button button--danger" type="button">Yes, Leave Room</button>
+              <button id="pause-cancel-leave" class="button button--outline" type="button">Stay in Case</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div id="tutorial" class="modal-backdrop tutorial-backdrop hidden" role="dialog" aria-modal="false" aria-labelledby="tutorial-title">
     <section class="modal-card tutorial-card">
-      <button id="tutorial-close" class="modal-close" aria-label="Skip tutorial">×</button>
-      <p id="tutorial-counter" class="eyebrow">YOUR FIRST MINUTE · STEP 1 OF 6</p>
-      <h2 id="tutorial-title">Move through London</h2>
-      <p id="tutorial-copy" class="tutorial-copy"></p>
-      <p id="tutorial-hint" class="tutorial-hint" aria-live="polite"></p>
-      <div class="tutorial-actions"><button id="tutorial-skip" class="button button--quiet" type="button">Skip tutorial</button><button id="tutorial-next" class="button button--gold" type="button" disabled>Next step →</button></div>
+      <div class="tutorial-card-header">
+        <p id="tutorial-counter" class="eyebrow">COOPERATIVE GUIDE · STEP 1 OF 5</p>
+        <div class="tutorial-header-controls">
+          <button id="tutorial-minimize" class="tutorial-control-btn" type="button" aria-label="Minimize or expand guide" title="Minimize / Expand">─</button>
+          <button id="tutorial-close" class="modal-close tutorial-control-btn" aria-label="Close tutorial" title="Close">×</button>
+        </div>
+      </div>
+      <div id="tutorial-content-wrap" class="tutorial-content-wrap">
+        <h2 id="tutorial-title">Step 1: Explore London</h2>
+        <p id="tutorial-copy" class="tutorial-copy">Explore London. Use WASD to move and drag to look around.</p>
+        <p id="tutorial-hint" class="tutorial-hint" aria-live="polite">On mobile, drag the virtual movement joystick.</p>
+        <div class="tutorial-actions">
+          <button id="tutorial-skip" class="button button--quiet" type="button">Skip Tutorial</button>
+          <button id="tutorial-next" class="button button--gold" type="button">Next Step →</button>
+        </div>
+      </div>
+      <div id="tutorial-minimized-bar" class="tutorial-minimized-bar hidden">
+        <span class="min-icon">📖</span>
+        <span id="tutorial-min-label" class="min-label">Investigation Guide (Step 1/5)</span>
+        <button id="tutorial-restore" class="button button--quiet button--xs" type="button">Expand ▴</button>
+      </div>
     </section>
   </div>
 
   <div id="evidence-puzzle" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="puzzle-title">
-    <section class="puzzle-card">
-      <button id="puzzle-close" class="modal-close" aria-label="Close evidence file">×</button>
-      <p id="puzzle-kicker" class="eyebrow">FIELD EXAMINATION</p>
+    <section class="puzzle-card evidence-discovery-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <div class="puzzle-wax-seal" aria-hidden="true"><span>SH</span></div>
+      <button id="puzzle-close" class="modal-close" aria-label="Close evidence discovery file">×</button>
+
+      <div class="puzzle-header-tag">
+        <span class="puzzle-magnifier" aria-hidden="true">🔍</span>
+        <p id="puzzle-kicker" class="eyebrow">FORENSIC CHALLENGE · PORTRAIT PIECE HUNT</p>
+      </div>
       <span class="puzzle-rule" aria-hidden="true"></span>
-      <h2 id="puzzle-title">Examine the evidence</h2>
+      <h2 id="puzzle-title">Crime Scene Investigation</h2>
+
+      <!-- Visual Artifact Showcase Stage with Magnifying-Glass Motif -->
+      <div class="evidence-stage" id="evidence-stage" aria-hidden="true">
+        <div id="evidence-magnifier" class="evidence-magnifier">
+          <div class="magnifier-glass"></div>
+          <div class="magnifier-rim"></div>
+          <div class="magnifier-glint"></div>
+          <div class="magnifier-handle"></div>
+        </div>
+        <div id="evidence-illustration" class="evidence-illustration">
+          <!-- Dynamically populated with SVG/HTML illustration tailored to discovered object -->
+        </div>
+        <div id="puzzle-stamp" class="puzzle-success-stamp hidden" aria-hidden="true">
+          <span class="stamp-word">RECOVERED</span>
+          <small class="stamp-sub">PORTRAIT PIECE SECURED</small>
+        </div>
+      </div>
+
+      <!-- Concise Description -->
       <p id="puzzle-evidence" class="puzzle-evidence"></p>
-      <h3 id="puzzle-question" class="puzzle-question"></h3>
-      <div id="puzzle-options" class="puzzle-options"></div>
+
+      <!-- Forensic Observations Box -->
+      <div id="puzzle-observations" class="puzzle-observations">
+        <div class="obs-item"><span class="obs-tag">OBJECTIVE</span><strong id="obs-ref">RECOVER THIEF'S PORTRAIT PIECE</strong></div>
+        <div class="obs-item"><span class="obs-tag">FORENSIC LEAD</span><strong id="obs-detail">Solve the mini-game below to secure the piece</strong></div>
+        <div class="obs-item"><span class="obs-tag">REWARD</span><strong id="obs-significance">Added to shared team portrait collection</strong></div>
+      </div>
+
+      <!-- MINI-GAME A: FIND OBJECTS (Reference Image 1) -->
+      <div id="minigame-find-objects" class="minigame-section hidden">
+        <div class="minigame-instruction">
+          <span class="inst-icon">🔍</span>
+          <span class="puzzle-instructions">Find the three objects hidden in this scene.</span>
+        </div>
+        <div class="find-targets-row" id="find-targets-row"></div>
+        <div class="find-scene-stage" id="find-scene-stage"></div>
+      </div>
+
+      <!-- MINI-GAME B: MATCH SYMBOLS (Reference Image 2) -->
+      <div id="minigame-match-symbols" class="minigame-section hidden">
+        <div class="minigame-instruction">
+          <span class="inst-icon">☀️</span>
+          <span class="puzzle-instructions">Find and match three pairs of identical symbols.</span>
+        </div>
+        <div class="match-tiles-grid" id="match-tiles-grid"></div>
+      </div>
+
+      <!-- MINI-GAME C: UNLOCK THE BOX (Reference Image 3) -->
+      <div id="minigame-unlock-box" class="minigame-section hidden">
+        <div class="minigame-instruction">
+          <span class="inst-icon">🔐</span>
+          <span class="puzzle-instructions">Rotate the symbols until all three match.</span>
+        </div>
+        <div class="unlock-code-banner">
+          <span>TARGET CODE:</span>
+          <strong id="unlock-target-code">[ ♔ ] · [ 🗝 ] · [ 👁 ]</strong>
+        </div>
+        <div class="padlock-chassis" id="padlock-chassis">
+          <div class="padlock-shackle" id="padlock-shackle"></div>
+          <div class="padlock-body">
+            <div class="dial-column" data-dial="0">
+              <button type="button" class="dial-btn dial-btn--up" data-dial="0" aria-label="Rotate dial 1 up">▲</button>
+              <div class="dial-display" id="dial-val-0">♔</div>
+              <button type="button" class="dial-btn dial-btn--down" data-dial="0" aria-label="Rotate dial 1 down">▼</button>
+            </div>
+            <div class="dial-column" data-dial="1">
+              <button type="button" class="dial-btn dial-btn--up" data-dial="1" aria-label="Rotate dial 2 up">▲</button>
+              <div class="dial-display" id="dial-val-1">🗝</div>
+              <button type="button" class="dial-btn dial-btn--down" data-dial="1" aria-label="Rotate dial 2 down">▼</button>
+            </div>
+            <div class="dial-column" data-dial="2">
+              <button type="button" class="dial-btn dial-btn--up" data-dial="2" aria-label="Rotate dial 3 up">▲</button>
+              <div class="dial-display" id="dial-val-2">👁</div>
+              <button type="button" class="dial-btn dial-btn--down" data-dial="2" aria-label="Rotate dial 3 down">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legacy / Text fallback options container -->
+      <h3 id="puzzle-question" class="puzzle-question hidden">Examine the exhibit and deduce the truth:</h3>
+      <div id="puzzle-options" class="puzzle-options hidden"></div>
+
+      <!-- Primary Action Row -->
+      <div class="evidence-action-row">
+        <button id="puzzle-submit" class="button button--gold button--collect-evidence" type="button">
+          <span class="btn-glyph" aria-hidden="true">🧩</span>
+          <span id="puzzle-submit-text">Secure Picture Piece</span>
+        </button>
+      </div>
+
       <p id="puzzle-feedback" class="puzzle-feedback" role="status" aria-live="polite"></p>
-      <p class="puzzle-footnote">Conclusions are recorded in the shared casebook only when they fit the evidence.</p>
+    </section>
+  </div>
+
+  <!-- Central Victorian Investigation Board Modal (Safehouse / Headquarters) -->
+  <div id="investigation-board-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="board-title">
+    <section class="modal-card board-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="board-close" class="modal-close" aria-label="Close investigation board">×</button>
+
+      <div class="board-header">
+        <p class="eyebrow"><span class="eyebrow-accent">◆</span> CENTRAL HEADQUARTERS · INVESTIGATION BOARD <span class="eyebrow-accent">◆</span></p>
+        <h2 id="board-title" class="board-title">The Phantom Thief’s Picture</h2>
+        <p class="board-subtitle">Assemble all 6 recovered picture fragments to reveal the mastermind and win the case together.</p>
+      </div>
+
+      <div class="board-portrait-stage">
+        <div class="board-portrait-frame">
+          <div id="board-portrait-grid" class="board-portrait-grid">
+            <div class="portrait-piece-slot" data-slot="1">
+              <div class="slot-inner"><span class="slot-number">PIECE #1</span><span class="slot-name">Ulster Cap & Brow</span></div>
+            </div>
+            <div class="portrait-piece-slot" data-slot="2">
+              <div class="slot-inner"><span class="slot-number">PIECE #2</span><span class="slot-name">Phantom Mask & Eyes</span></div>
+            </div>
+            <div class="portrait-piece-slot" data-slot="3">
+              <div class="slot-inner"><span class="slot-number">PIECE #3</span><span class="slot-name">High Velvet Collar</span></div>
+            </div>
+            <div class="portrait-piece-slot" data-slot="4">
+              <div class="slot-inner"><span class="slot-number">PIECE #4</span><span class="slot-name">Gold Pocket Watch</span></div>
+            </div>
+            <div class="portrait-piece-slot" data-slot="5">
+              <div class="slot-inner"><span class="slot-number">PIECE #5</span><span class="slot-name">Crimson Silk Cravat</span></div>
+            </div>
+            <div class="portrait-piece-slot" data-slot="6">
+              <div class="slot-inner"><span class="slot-number">PIECE #6</span><span class="slot-name">Gloved Hand & Key</span></div>
+            </div>
+          </div>
+          <div id="board-revealed-portrait" class="board-revealed-portrait hidden" aria-hidden="true">
+            <div class="revealed-portrait-art"></div>
+            <div class="revealed-portrait-tag">EDWARD BLACKTHORN · UNMASKED</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="board-progress-bar-wrap">
+        <div class="board-progress-info">
+          <span id="board-progress-label">PIECES RECOVERED:</span>
+          <strong id="board-progress-count">0 / 6</strong>
+        </div>
+        <div class="board-progress-track">
+          <div id="board-progress-fill" class="board-progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <p id="board-status-msg" class="board-status-msg">Explore London and complete mini-games to recover all 6 fragments.</p>
+
+      <div class="board-actions">
+        <button id="board-assemble-btn" class="button button--gold button--assemble" type="button" disabled>
+          <span class="assemble-icon">✨</span> ASSEMBLE PORTRAIT
+        </button>
+      </div>
+    </section>
+  </div>
+
+      <!-- Keyboard & Touch Instructions Legend -->
+      <div class="puzzle-instructions" aria-hidden="true">
+        <span class="inst-key"><kbd>E</kbd> or <kbd>Enter</kbd></span><span class="inst-label">Collect</span>
+        <span class="inst-sep">·</span>
+        <span class="inst-key"><kbd>Esc</kbd></span><span class="inst-label">Dismiss</span>
+        <span class="inst-sep">·</span>
+        <span class="inst-note">Watson’s Casebook records all verified evidence</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- Victorian Casebook Investigation Desk Modal -->
+  <div id="casebook-desk" class="modal-backdrop casebook-desk-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="casebook-desk-title">
+    <div class="casebook-desk-frame">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+
+      <!-- Desk Frame Header -->
+      <header class="desk-header">
+        <div class="desk-header__title-group">
+          <span class="desk-seal" aria-hidden="true">221B</span>
+          <div>
+            <p class="eyebrow">COOPERATIVE CASEBOOK · FILE #1895-07</p>
+            <h2 id="casebook-desk-title" class="desk-title">Watson’s Casebook</h2>
+          </div>
+        </div>
+
+        <!-- Brass Navigation Tabs -->
+        <nav class="desk-tabs" role="tablist" aria-label="Investigation desk sections">
+          <button id="desk-tab-evidence" class="desk-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="desk-view-evidence">
+            <span class="tab-glyph" aria-hidden="true">🎯</span>
+            <span class="tab-label">Mission</span>
+            <span id="desk-evidence-count" class="tab-badge">0 / 6</span>
+          </button>
+          <button id="desk-tab-clues" class="desk-tab" type="button" role="tab" aria-selected="false" aria-controls="desk-view-clues">
+            <span class="tab-glyph" aria-hidden="true">🧩</span>
+            <span class="tab-label">Collected Pieces</span>
+            <span id="desk-clues-count" class="tab-badge">0 / 6</span>
+          </button>
+          <button id="desk-tab-map" class="desk-tab" type="button" role="tab" aria-selected="false" aria-controls="desk-view-map">
+            <span class="tab-glyph" aria-hidden="true">🗺️</span>
+            <span class="tab-label">Map</span>
+          </button>
+          <button id="desk-tab-suspects" class="desk-tab hidden" type="button" role="tab" aria-selected="false" aria-controls="desk-view-suspects" style="display: none !important;">
+            <span class="tab-glyph" aria-hidden="true">👥</span>
+            <span class="tab-label">Suspects</span>
+            <span id="desk-suspects-count" class="tab-badge">0</span>
+          </button>
+          <button id="desk-tab-notes" class="desk-tab hidden" type="button" role="tab" aria-selected="false" aria-controls="desk-view-notes" style="display: none !important;">
+            <span class="tab-glyph" aria-hidden="true">📝</span>
+            <span class="tab-label">Notes</span>
+          </button>
+        </nav>
+
+        <button id="casebook-desk-close" class="modal-close desk-close-btn" aria-label="Close Investigation Desk">×</button>
+      </header>
+
+      <!-- Desk Surface: Corkboard / Mahogany Surface -->
+      <div class="desk-surface">
+        <!-- SVG Red Thread Canvas Overlay (connecting related evidence pins) -->
+        <svg id="desk-thread-svg" class="desk-thread-svg" aria-hidden="true"></svg>
+
+        <!-- VIEW 1: EVIDENCE (Pinned Cards with Illustrations and Red String Connections) -->
+        <div id="desk-view-evidence" class="desk-view is-active" role="tabpanel" aria-labelledby="desk-tab-evidence">
+          <div class="desk-subhead">
+            <div>
+              <p class="eyebrow">COOPERATIVE MISSION · 6 PORTRAIT PIECES</p>
+              <h3 id="desk-evidence-stage-text" class="desk-stage-headline">Stage 1: Crime Scene Survey · Search London buildings for forensic traces</h3>
+            </div>
+            <div class="desk-evidence-actions-row">
+              <span id="desk-progress-badge" class="count-chip">0 / 6 PIECES RECOVERED</span>
+              <button id="desk-call-vote-btn" class="button button--gold button--sm hidden" type="button" disabled style="display: none !important;">
+                ⚖️ Accusation
+              </button>
+            </div>
+          </div>
+
+          <!-- Progressive Forensic Progress Bar (1 to 6) -->
+          <div class="evidence-progress-container" aria-label="Evidence Discovery Progress">
+            <div class="evidence-progress-bar">
+              <div id="evidence-progress-fill" class="evidence-progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="evidence-milestones">
+              <div class="milestone-step" data-step="1"><span class="milestone-dot">1</span><span class="milestone-label">Footprints</span></div>
+              <div class="milestone-step" data-step="2"><span class="milestone-dot">2</span><span class="milestone-label">Fabric</span></div>
+              <div class="milestone-step" data-step="3"><span class="milestone-dot">3</span><span class="milestone-label">Photo</span></div>
+              <div class="milestone-step" data-step="4"><span class="milestone-dot">4</span><span class="milestone-label">Letter</span></div>
+              <div class="milestone-step" data-step="5"><span class="milestone-dot">5</span><span class="milestone-label">Location</span></div>
+              <div class="milestone-step" data-step="6"><span class="milestone-dot">6</span><span class="milestone-label">Fingerprint</span></div>
+            </div>
+          </div>
+
+          <div id="desk-evidence-grid" class="desk-evidence-grid">
+            <!-- Dynamically populated with pinned evidence cards -->
+          </div>
+        </div>
+
+        <!-- VIEW 2: CLUES (Watson's Filed Deductions & Reasoning) -->
+        <div id="desk-view-clues" class="desk-view hidden" role="tabpanel" aria-labelledby="desk-tab-clues">
+          <div class="desk-subhead">
+            <p class="eyebrow">WATSON’S FIELD CASEBOOK · FORMAL DEDUCTIONS</p>
+            <span id="desk-clue-badge" class="count-chip">0 FILED</span>
+          </div>
+          <div id="desk-clues-list" class="desk-clues-list">
+            <!-- Dynamically populated with filed clues -->
+          </div>
+        </div>
+
+        <!-- VIEW 3: SUSPECTS (Deduction Roster & Known Statements) -->
+        <div id="desk-view-suspects" class="desk-view hidden" role="tabpanel" aria-labelledby="desk-tab-suspects">
+          <div class="desk-subhead">
+            <p class="eyebrow">PERSONS OF INTEREST & DETECTIVE STATEMENTS</p>
+            <span id="desk-suspects-badge" class="count-chip">ROSTER</span>
+          </div>
+          <div id="desk-suspects-grid" class="desk-suspects-grid">
+            <!-- Dynamically populated with real suspects / players -->
+          </div>
+        </div>
+
+        <!-- VIEW 4: MAP (Victorian District Map & Landmarks) -->
+        <div id="desk-view-map" class="desk-view hidden" role="tabpanel" aria-labelledby="desk-tab-map">
+          <div class="desk-subhead">
+            <p class="eyebrow">CARTOGRAPHIC SURVEY OF LONDON · 1895</p>
+            <span class="count-chip">4 SECTORS</span>
+          </div>
+          <div id="desk-map-canvas-wrap" class="desk-map-canvas-wrap">
+            <!-- Hand-drawn parchment district map with landmark pins -->
+          </div>
+        </div>
+
+        <!-- VIEW 5: NOTES (Chronological Telegram Logs & Objective Progress) -->
+        <div id="desk-view-notes" class="desk-view hidden" role="tabpanel" aria-labelledby="desk-tab-notes">
+          <div class="desk-subhead">
+            <p class="eyebrow">BAKER STREET TELEGRAM TRANSCRIPTS & CASE NOTES</p>
+            <span class="count-chip">OFFICIAL LOG</span>
+          </div>
+          <div id="desk-notes-container" class="desk-notes-container">
+            <!-- Case overview & telegram transcripts -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Desk Footer: Navigation & Keyboard Hints -->
+      <footer class="desk-footer">
+        <div class="desk-footer__keys" aria-hidden="true">
+          <span><kbd>1</kbd>–<kbd>5</kbd> Switch Tabs</span>
+          <span class="sep">·</span>
+          <span><kbd>Tab</kbd> / <kbd>J</kbd> / <kbd>Esc</kbd> Close</span>
+          <span class="sep">·</span>
+          <span class="note">All evidence synchronized across the detective team</span>
+        </div>
+        <button id="desk-close-action" class="button button--outline button--sm" type="button">Return to Investigation</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Evidence Inspector Modal (Magnifying Loupe & Forensic Analysis) -->
+  <div id="evidence-inspector-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="inspector-title">
+    <section class="puzzle-card inspector-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="inspector-close" class="modal-close" aria-label="Close Evidence Inspector">×</button>
+
+      <div class="minigame-header">
+        <span class="puzzle-eyebrow" id="inspector-eyebrow">SCOTLAND YARD FORENSIC LABORATORY · EXHIBIT INSPECTION</span>
+        <h2 id="inspector-title" class="puzzle-headline">Exhibit Inspection</h2>
+        <p id="inspector-subtitle" class="minigame-instructions">Detailed physical analysis and suspect cross-reference.</p>
+      </div>
+
+      <div class="inspector-stage">
+        <!-- Left: Magnified Loupe Artwork -->
+        <div class="inspector-art-box">
+          <div class="magnifier-frame">
+            <div id="inspector-illustration" class="inspector-illustration">
+              <!-- Magnified SVG vector art -->
+            </div>
+            <div class="magnifier-glass-glare" aria-hidden="true"></div>
+          </div>
+          <span id="inspector-stamp" class="inspector-stamp">VERIFIED ARTIFACT</span>
+        </div>
+
+        <!-- Right: Forensic Analysis Dossier -->
+        <div class="inspector-details-box">
+          <div class="dossier-section">
+            <h4 class="dossier-heading">FORENSIC OBSERVATIONS</h4>
+            <p id="inspector-desc" class="dossier-body"></p>
+            <ul id="inspector-observations-list" class="dossier-list"></ul>
+          </div>
+
+          <div class="dossier-section">
+            <h4 class="dossier-heading">SUSPECT COMPATIBILITY</h4>
+            <div id="inspector-suspect-checklist" class="inspector-suspect-checklist">
+              <!-- Dynamically populated with suspect check/cross indicators -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="puzzle-actions">
+        <button id="inspector-connect-btn" class="button button--gold" type="button">
+          🧵 Connect to Another Clue
+        </button>
+        <button id="inspector-dismiss-btn" class="button button--secondary" type="button">
+          Return to Desk
+        </button>
+      </div>
+    </section>
+  </div>
+  <!-- Grandfather Clock Puzzle Modal (Panel 5 Art Reference) -->
+  <div id="clock-puzzle-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="clock-puzzle-title">
+    <section class="puzzle-card clock-puzzle-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="clock-puzzle-close" class="modal-close" aria-label="Close Clock Puzzle">×</button>
+
+      <p class="puzzle-eyebrow">PUZZLE</p>
+      <h2 id="clock-puzzle-title" class="puzzle-headline">The Grandfather Clock</h2>
+
+      <blockquote class="clock-riddle">
+        “Three bells past midnight,<br>
+        two before dawn.<br>
+        Set the hands to the hour<br>
+        when the thief was born.”
+      </blockquote>
+
+      <!-- Antique Roman Numeral Clock Face Representation -->
+      <div class="clock-dial-stage">
+        <div class="clock-dial-housing">
+          <div class="clock-dial-bezel"></div>
+          <div id="clock-dial-face" class="clock-dial-face">
+            <span class="clock-num clock-num--12">XII</span>
+            <span class="clock-num clock-num--1">I</span>
+            <span class="clock-num clock-num--2">II</span>
+            <span class="clock-num clock-num--3">III</span>
+            <span class="clock-num clock-num--4">IV</span>
+            <span class="clock-num clock-num--5">V</span>
+            <span class="clock-num clock-num--6">VI</span>
+            <span class="clock-num clock-num--7">VII</span>
+            <span class="clock-num clock-num--8">VIII</span>
+            <span class="clock-num clock-num--9">IX</span>
+            <span class="clock-num clock-num--10">X</span>
+            <span class="clock-num clock-num--11">XI</span>
+            <div id="clock-hand-hour" class="clock-hand clock-hand--hour"></div>
+            <div id="clock-hand-minute" class="clock-hand clock-hand--minute"></div>
+            <div class="clock-center-pin"></div>
+          </div>
+        </div>
+        <div class="clock-hour-indicator">
+          <span class="clock-time-tag">CURRENT SETTING:</span>
+          <strong id="clock-hour-text">IV (4:00)</strong>
+        </div>
+      </div>
+
+      <div class="clock-stepper-row">
+        <button id="clock-hour-down" class="button button--outline button--sm" type="button">◀ -1 Hour</button>
+        <button id="clock-hour-up" class="button button--outline button--sm" type="button">+1 Hour ▶</button>
+      </div>
+
+      <div class="puzzle-action-buttons">
+        <button id="clock-confirm" class="button button--gold button--confirm-action" type="button">
+          <kbd class="hud-kbd">E</kbd> Confirm
+        </button>
+        <button id="clock-hint-btn" class="button button--secondary" type="button">
+          <kbd class="hud-kbd">H</kbd> Hint
+        </button>
+        <button id="clock-reset" class="button button--quiet button--reset-action" type="button">
+          <kbd class="hud-kbd">R</kbd> Reset
+        </button>
+      </div>
+      <div id="clock-hint-box" class="minigame-hint-box hidden">
+        <span class="hint-tag">HINT:</span> "Three bells past midnight" + "two before dawn (6:00)" points directly to the hour of IV (4:00).
+      </div>
+      <p id="clock-feedback" class="puzzle-feedback" role="status" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <!-- The Library Code Puzzle Modal (Panel 6 Art Reference) -->
+  <div id="library-puzzle-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="library-puzzle-title">
+    <section class="puzzle-card library-puzzle-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="library-puzzle-close" class="modal-close" aria-label="Close Library Code Puzzle">×</button>
+
+      <p class="puzzle-eyebrow">PUZZLE</p>
+      <h2 id="library-puzzle-title" class="puzzle-headline">The Library Code</h2>
+      <p class="library-instructions">Select the books in the correct order based on the stolen ledger.</p>
+
+      <!-- 5 Interactive Leather-Bound Roman Numeral Books -->
+      <div class="library-shelf-stage">
+        <div class="library-wood-shelf">
+          <div id="library-books-row" class="library-books-row">
+            <button class="library-book-btn" data-book="1" type="button" aria-label="Book I">
+              <span class="book-spine-gold">I</span>
+            </button>
+            <button class="library-book-btn" data-book="2" type="button" aria-label="Book II">
+              <span class="book-spine-gold">II</span>
+            </button>
+            <button class="library-book-btn" data-book="3" type="button" aria-label="Book III">
+              <span class="book-spine-gold">III</span>
+            </button>
+            <button class="library-book-btn" data-book="4" type="button" aria-label="Book IV">
+              <span class="book-spine-gold">IV</span>
+            </button>
+            <button class="library-book-btn" data-book="5" type="button" aria-label="Book V">
+              <span class="book-spine-gold">V</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="library-selection-indicator">
+        <span class="selection-label">SEQUENCE:</span>
+        <span id="library-sequence-text" class="selection-val">—</span>
+      </div>
+
+      <div class="puzzle-action-buttons">
+        <button id="library-submit" class="button button--gold button--confirm-action" type="button">
+          <kbd class="hud-kbd">E</kbd> Submit
+        </button>
+        <button id="library-hint-btn" class="button button--secondary" type="button">
+          <kbd class="hud-kbd">H</kbd> Hint
+        </button>
+        <button id="library-reset" class="button button--quiet button--reset-action" type="button">
+          <kbd class="hud-kbd">R</kbd> Reset
+        </button>
+      </div>
+      <div id="library-hint-box" class="minigame-hint-box hidden">
+        <span class="hint-tag">HINT:</span> The stolen ledger reveals the volume trilogy: pull Volume III, then IV, then V.
+      </div>
+      <p id="library-feedback" class="puzzle-feedback" role="status" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <!-- The Basement Mechanism Puzzle Modal (Panel 11 Art Reference) -->
+  <div id="basement-puzzle-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="basement-puzzle-title">
+    <section class="puzzle-card basement-puzzle-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="basement-puzzle-close" class="modal-close" aria-label="Close Basement Mechanism Puzzle">×</button>
+
+      <p class="puzzle-eyebrow">PUZZLE</p>
+      <h2 id="basement-puzzle-title" class="puzzle-headline">The Basement Mechanism</h2>
+      <p class="basement-instructions">Use the clues to enter the correct symbol sequence on the cryptex cylinder.</p>
+      <p class="basement-inscription"><em>"When the Morning Sun greets the Midnight Moon, the Star of London shall unlock the Master Key."</em></p>
+
+      <!-- 4 Rotating Cryptex Cylinder Dials -->
+      <div class="cryptex-stage">
+        <div class="cryptex-housing">
+          <div id="cryptex-dials-row" class="cryptex-dials-row" role="group" aria-label="Cryptex cylinder dials">
+            <!-- Ring 1 -->
+            <div class="cryptex-dial-unit is-active" data-dial-index="0">
+              <button class="dial-arrow dial-arrow--up" data-dial="0" data-dir="-1" type="button" aria-label="Rotate dial 1 up">▲</button>
+              <div class="cryptex-wheel">
+                <span class="symbol-icon" id="cryptex-icon-0">☀</span>
+                <span class="symbol-name" id="cryptex-name-0">Sun</span>
+              </div>
+              <button class="dial-arrow dial-arrow--down" data-dial="0" data-dir="1" type="button" aria-label="Rotate dial 1 down">▼</button>
+            </div>
+            <!-- Ring 2 -->
+            <div class="cryptex-dial-unit" data-dial-index="1">
+              <button class="dial-arrow dial-arrow--up" data-dial="1" data-dir="-1" type="button" aria-label="Rotate dial 2 up">▲</button>
+              <div class="cryptex-wheel">
+                <span class="symbol-icon" id="cryptex-icon-1">☀</span>
+                <span class="symbol-name" id="cryptex-name-1">Sun</span>
+              </div>
+              <button class="dial-arrow dial-arrow--down" data-dial="1" data-dir="1" type="button" aria-label="Rotate dial 2 down">▼</button>
+            </div>
+            <!-- Ring 3 -->
+            <div class="cryptex-dial-unit" data-dial-index="2">
+              <button class="dial-arrow dial-arrow--up" data-dial="2" data-dir="-1" type="button" aria-label="Rotate dial 3 up">▲</button>
+              <div class="cryptex-wheel">
+                <span class="symbol-icon" id="cryptex-icon-2">☀</span>
+                <span class="symbol-name" id="cryptex-name-2">Sun</span>
+              </div>
+              <button class="dial-arrow dial-arrow--down" data-dial="2" data-dir="1" type="button" aria-label="Rotate dial 3 down">▼</button>
+            </div>
+            <!-- Ring 4 -->
+            <div class="cryptex-dial-unit" data-dial-index="3">
+              <button class="dial-arrow dial-arrow--up" data-dial="3" data-dir="-1" type="button" aria-label="Rotate dial 4 up">▲</button>
+              <div class="cryptex-wheel">
+                <span class="symbol-icon" id="cryptex-icon-3">☀</span>
+                <span class="symbol-name" id="cryptex-name-3">Sun</span>
+              </div>
+              <button class="dial-arrow dial-arrow--down" data-dial="3" data-dir="1" type="button" aria-label="Rotate dial 4 down">▼</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cryptex-hints-row">
+        <span class="cryptex-key-hint"><kbd class="hud-kbd">A</kbd> <kbd class="hud-kbd">D</kbd> Rotate Symbol</span>
+        <span class="cryptex-key-hint"><kbd class="hud-kbd">◄</kbd> <kbd class="hud-kbd">►</kbd> Select Ring</span>
+      </div>
+
+      <div class="puzzle-action-buttons">
+        <button id="basement-submit" class="button button--gold button--confirm-action" type="button">
+          <kbd class="hud-kbd">E</kbd> Confirm
+        </button>
+        <button id="basement-hint-btn" class="button button--secondary" type="button">
+          <kbd class="hud-kbd">H</kbd> Hint
+        </button>
+        <button id="basement-reset" class="button button--quiet button--reset-action" type="button">
+          <kbd class="hud-kbd">R</kbd> Reset
+        </button>
+      </div>
+      <div id="basement-hint-box" class="minigame-hint-box hidden">
+        <span class="hint-tag">HINT:</span> Align the cryptex dials in the inscription's celestial order: Sun, Moon, Star, and Key.
+      </div>
+      <p id="basement-feedback" class="puzzle-feedback" role="status" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <!-- The Thief Revealed Modal (Panel 9 Art Reference) -->
+  <div id="thief-revealed-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="thief-modal-title">
+    <section class="puzzle-card thief-revealed-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="thief-modal-close" class="modal-close" aria-label="Close Portrait View">×</button>
+
+      <div class="thief-reveal-layout">
+        <!-- Gilded Oil Painting Frame -->
+        <div class="thief-frame-stage">
+          <div class="thief-gilded-border">
+            <div id="thief-portrait-canvas-box" class="thief-portrait-canvas-box">
+              <div class="portrait-shadow-layer"></div>
+              <div class="thief-silhouette-art"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sleek Victorian Details Card -->
+        <div class="thief-info-panel">
+          <h2 id="thief-modal-title" class="thief-title">The Thief Revealed</h2>
+          <div class="thief-profile-row">
+            <span class="thief-label">Name:</span>
+            <strong class="thief-name">Edward Blackthorn</strong>
+          </div>
+          <ul class="thief-bullet-list">
+            <li><span class="thief-bullet-dot">•</span> Known as the London Art Thief</li>
+            <li><span class="thief-bullet-dot">•</span> Involved in multiple heists</li>
+            <li><span class="thief-bullet-dot">•</span> Evidence matches all clues</li>
+          </ul>
+
+          <div class="thief-action-row">
+            <button id="thief-add-casebook" class="button button--gold button--confirm-action" type="button">
+              <kbd class="hud-kbd">E</kbd> Add to Casebook
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- MINI-GAME 1: Victorian Lock Picking Modal -->
+  <div id="lockpick-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="lockpick-title">
+    <section class="puzzle-card minigame-card lockpick-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="lockpick-close" class="modal-close" aria-label="Close Lock Picking">×</button>
+
+      <div class="minigame-header">
+        <span class="puzzle-eyebrow">FORENSIC MINI-GAME · LOCK PICKING</span>
+        <h2 id="lockpick-title" class="puzzle-headline">Victorian Concentric Vault Lock</h2>
+        <p class="minigame-instructions">Rotate the three brass lock tumblers until each shear gate aligns with the top indicator mark.</p>
+      </div>
+
+      <div class="lockpick-stage">
+        <!-- Victorian Lock Plate & Tumblers -->
+        <div class="lock-casing">
+          <div class="lock-shear-indicator" aria-hidden="true">
+            <span class="shear-marker">▼ SHEAR LINE</span>
+          </div>
+          <div class="lock-shackle" id="lock-shackle" aria-hidden="true"></div>
+          
+          <div class="lock-face">
+            <!-- Outer Tumbler (Ring A) -->
+            <div id="tumbler-ring-0" class="lock-ring lock-ring--outer is-selected" data-ring="0">
+              <div class="ring-label-pos">RING I: <span id="ring-val-0">I</span></div>
+            </div>
+            <!-- Middle Tumbler (Ring B) -->
+            <div id="tumbler-ring-1" class="lock-ring lock-ring--middle" data-ring="1">
+              <div class="ring-label-pos">RING II: <span id="ring-val-1">I</span></div>
+            </div>
+            <!-- Inner Tumbler (Ring C) -->
+            <div id="tumbler-ring-2" class="lock-ring lock-ring--inner" data-ring="2">
+              <div class="ring-label-pos">RING III: <span id="ring-val-2">I</span></div>
+            </div>
+            <!-- Keyhole & Tension Pick -->
+            <div class="lock-keyhole">
+              <div id="lockpick-tension-pick" class="tension-pick"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tumbler Control Console -->
+        <div class="lockpick-controls-panel">
+          <div class="ring-selectors">
+            <button class="ring-select-btn is-active" data-select-ring="0" type="button">Ring I</button>
+            <button class="ring-select-btn" data-select-ring="1" type="button">Ring II</button>
+            <button class="ring-select-btn" data-select-ring="2" type="button">Ring III</button>
+          </div>
+          <div class="rotation-action-row">
+            <button id="lockpick-turn-left" class="button button--secondary rot-btn" type="button">
+              <span>⟲</span> Rotate Left
+            </button>
+            <button id="lockpick-turn-right" class="button button--secondary rot-btn" type="button">
+              Rotate Right <span>⟳</span>
+            </button>
+          </div>
+          <div id="lockpick-hint-box" class="minigame-hint-box hidden">
+            <span class="hint-tag">HINT:</span> Examine the ward notches: Ring I aligns at III, Ring II aligns at VII, and Ring III aligns at V.
+          </div>
+        </div>
+      </div>
+
+      <div class="puzzle-actions">
+        <button id="lockpick-submit" class="button button--gold button--confirm-action" type="button">
+          <kbd class="hud-kbd">E</kbd> Engage Lockpick
+        </button>
+        <button id="lockpick-hint-btn" class="button button--secondary" type="button">
+          <kbd class="hud-kbd">H</kbd> Hint
+        </button>
+        <button id="lockpick-reset" class="button button--quiet button--reset-action" type="button">
+          <kbd class="hud-kbd">R</kbd> Reset
+        </button>
+      </div>
+      <p id="lockpick-feedback" class="puzzle-feedback" role="status" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <!-- MINI-GAME 2: Torn Photograph Reconstruction Modal -->
+  <div id="photoreconstruct-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="photoreconstruct-title">
+    <section class="puzzle-card minigame-card photo-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="photo-puzzle-close" class="modal-close" aria-label="Close Photo Reconstruction">×</button>
+
+      <div class="minigame-header">
+        <span class="puzzle-eyebrow">FORENSIC MINI-GAME · DAGUERREOTYPE RECONSTRUCTION</span>
+        <h2 id="photoreconstruct-title" class="puzzle-headline">Torn Photograph Assembly</h2>
+        <p class="minigame-instructions">Drag and arrange the 6 torn photographic fragments onto the mounting plate to reveal the thief's identity.</p>
+      </div>
+
+      <div class="photo-reconstruct-stage">
+        <!-- Assembly Board Grid (2 Rows x 3 Cols) -->
+        <div class="photo-board-wrapper">
+          <div class="photo-board-header">DARKROOM MOUNTING BOARD</div>
+          <div id="photo-dropzone-grid" class="photo-dropzone-grid" role="region" aria-label="Photo Mounting Grid">
+            <div class="photo-slot" data-slot="0"><span class="slot-number">1</span></div>
+            <div class="photo-slot" data-slot="1"><span class="slot-number">2</span></div>
+            <div class="photo-slot" data-slot="2"><span class="slot-number">3</span></div>
+            <div class="photo-slot" data-slot="3"><span class="slot-number">4</span></div>
+            <div class="photo-slot" data-slot="4"><span class="slot-number">5</span></div>
+            <div class="photo-slot" data-slot="5"><span class="slot-number">6</span></div>
+          </div>
+        </div>
+
+        <!-- Shuffled Pieces Tray -->
+        <div class="photo-tray-wrapper">
+          <div class="photo-tray-header">TORN FRAGMENTS TRAY</div>
+          <div id="photo-pieces-tray" class="photo-pieces-tray" role="region" aria-label="Torn Fragments Tray">
+            <!-- Dynamically populated fragments -->
+          </div>
+          <div id="photo-hint-box" class="minigame-hint-box hidden">
+            <span class="hint-tag">HINT:</span> The top hat crown belongs in Slot 2; the Thames gaslight glow occupies Slot 1.
+          </div>
+        </div>
+      </div>
+
+      <div class="puzzle-actions">
+        <button id="photo-submit" class="button button--gold button--confirm-action" type="button">
+          <kbd class="hud-kbd">E</kbd> Examine Daguerreotype
+        </button>
+        <button id="photo-hint-btn" class="button button--secondary" type="button">
+          <kbd class="hud-kbd">H</kbd> Hint
+        </button>
+        <button id="photo-reset" class="button button--quiet button--reset-action" type="button">
+          <kbd class="hud-kbd">R</kbd> Reset
+        </button>
+      </div>
+      <p id="photo-feedback" class="puzzle-feedback" role="status" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <!-- MINI-GAME 3: Secret Code Decoding (Cipher Wheel) Modal -->
+  <div id="cipherwheel-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="cipherwheel-title">
+    <section class="puzzle-card minigame-card cipher-card">
+      <div class="card-corner-ornament card-corner-ornament--tl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--tr" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--bl" aria-hidden="true"></div>
+      <div class="card-corner-ornament card-corner-ornament--br" aria-hidden="true"></div>
+      <button id="cipher-wheel-close" class="modal-close" aria-label="Close Cipher Wheel">×</button>
+
+      <div class="minigame-header">
+        <span class="puzzle-eyebrow">FORENSIC MINI-GAME · CIPHER DISK</span>
+        <h2 id="cipherwheel-title" class="puzzle-headline">Victorian Brass Cipher Disk</h2>
+        <p class="minigame-instructions">Rotate the inner brass cipher disk to decode the secret encrypted transmission.</p>
+      </div>
+
+      <div class="cipher-wheel-stage">
+        <!-- Encrypted Letter Parchment -->
+        <div class="cipher-letter-box">
+          <div class="parchment-document">
+            <p class="parchment-header">CONFIDENTIAL DISPATCH · THE PORTER'S LEDGER</p>
+            <div class="cipher-message-row">
+              <span class="cipher-label">ENCRYPTED:</span>
+              <strong class="cipher-text" id="cipher-encrypted-text">ISHJRAOVYU</strong>
+            </div>
+            <div class="cipher-message-row">
+              <span class="cipher-label">DECRYPTED:</span>
+              <strong class="decrypted-preview" id="cipher-decoded-preview">--------</strong>
+            </div>
+            <div id="cipher-hint-box" class="minigame-hint-box hidden">
+              <span class="hint-tag">HINT:</span> The margin annotation notes: <em>"Turn the disk seven notches forward (+7)."</em>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Dual Brass Cipher Disk -->
+        <div class="wheel-apparatus-box">
+          <div class="wheel-stage">
+            <div class="wheel-fixed-outer" id="cipher-outer-ring">
+              <!-- Outer fixed alphabet A-Z -->
+              <span class="wheel-title-tag">OUTER ALPHABET (PLAIN)</span>
+            </div>
+            <div class="wheel-rotating-inner" id="cipher-inner-wheel">
+              <!-- Inner rotating cipher alphabet -->
+              <div class="wheel-brass-hub">
+                <span id="wheel-shift-indicator" class="wheel-shift-indicator">SHIFT: +0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wheel Shift Stepper Controls -->
+          <div class="wheel-controls">
+            <button id="cipher-step-down" class="button button--secondary" type="button">⟲ -1 Shift</button>
+            <input type="range" id="cipher-shift-slider" min="0" max="25" value="0" class="cipher-slider" aria-label="Cipher shift offset" />
+            <button id="cipher-step-up" class="button button--secondary" type="button">+1 Shift ⟳</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="puzzle-actions">
+        <button id="cipher-submit" class="button button--gold button--confirm-action" type="button">
+          <kbd class="hud-kbd">E</kbd> Decode Transmission
+        </button>
+        <button id="cipher-hint-btn" class="button button--secondary" type="button">
+          <kbd class="hud-kbd">H</kbd> Hint
+        </button>
+        <button id="cipher-reset" class="button button--quiet button--reset-action" type="button">
+          <kbd class="hud-kbd">R</kbd> Reset
+        </button>
+      </div>
+      <p id="cipher-feedback" class="puzzle-feedback" role="status" aria-live="polite"></p>
     </section>
   </div>
 </body>

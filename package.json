@@ -9,6 +9,8 @@
     "dev:local": "npm run build && node server.mjs",
     "deploy:preview": "vercel",
     "deploy:production": "vercel --prod",
+    "test": "node scripts/run-all-verifications.mjs",
+    "test:all": "node scripts/run-all-verifications.mjs && npm run test:game",
     "test:game": "node scripts/test-three-rounds.mjs && node scripts/test-full-game.mjs && node scripts/test-vercel-handler.mjs",
     "test:room-cap": "node scripts/test-room-cap.mjs",
     "build": "node scripts/build-site.mjs"

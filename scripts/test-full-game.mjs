@@ -52,6 +52,7 @@ try {
   // Eight seats still create exactly one hidden culprit, and the role stays private.
   Math.random = () => 0.37;
   const full = newRoom('EIGHT1', 'Holmes');
+  full.room.mode = 'deduction';
   const fullPlayers = [full.player, ...Array.from({ length: 7 }, (_, i) => addPlayer(full.room, `Detective ${i + 2}`))];
   readyAll(full.room, fullPlayers);
   assert.equal(full.room.mode, 'deduction');
@@ -65,6 +66,7 @@ try {
   // Exercise a complete four-player case: unanimous capture, all missions, and shared reunion.
   Math.random = () => 0;
   const party = newRoom('CASE01', 'Inspector');
+  party.room.mode = 'deduction';
   const players = [party.player, addPlayer(party.room, 'Irene'), addPlayer(party.room, 'Lestrade'), addPlayer(party.room, 'Moriarty')];
   readyAll(party.room, players);
   const culprit = players.find((p) => p.role === 'culprit');
@@ -86,7 +88,8 @@ try {
   act(party.room, detectives[1], 'trap', { mechanism: 'valve' });
   act(party.room, detectives[2], 'trap', { mechanism: 'key' });
   assert.equal(party.room.culpritCaught, true);
-  assert.equal(culprit.eliminated, true);
+  assert.equal(culprit.captured, true);
+  assert.equal(culprit.eliminated, false);
   assert.equal(publicRoom(party.room, detectives[0]).room.players.find((p) => p.id === culprit.id).revealedRole, 'culprit');
 
   investigate(party.room, detectives[0], 112, 108);
@@ -103,6 +106,7 @@ try {
   investigate(party.room, detectives[1], 738, 306);
   investigate(party.room, detectives[0], 874, 410);
   assert.equal(party.room.phase, 'reunion');
+  culprit.x = 484; culprit.y = 552;
   for (const detective of detectives) { detective.x = 484; detective.y = 552; }
   assert.equal(publicRoom(party.room, detectives[0]).room.reunionReady, true);
   act(party.room, detectives[2], 'interact');
@@ -113,6 +117,7 @@ try {
 
   // Verify culprit strike, teammate rescue, station sabotage, and cooldown.
   const actionRoom = newRoom('ACT001', 'Inspector');
+  actionRoom.room.mode = 'deduction';
   const actionPlayers = [actionRoom.player, addPlayer(actionRoom.room, 'Irene'), addPlayer(actionRoom.room, 'Lestrade'), addPlayer(actionRoom.room, 'Moriarty')];
   readyAll(actionRoom.room, actionPlayers);
   const actionCulprit = actionPlayers.find((p) => p.role === 'culprit');
@@ -148,6 +153,7 @@ try {
 
   // A ballot that times out without unanimity is a split and does not expose anyone.
   const timeout = newRoom('TIME01', 'Inspector');
+  timeout.room.mode = 'deduction';
   const timeoutPlayers = [timeout.player, addPlayer(timeout.room, 'Irene'), addPlayer(timeout.room, 'Lestrade'), addPlayer(timeout.room, 'Moriarty')];
   readyAll(timeout.room, timeoutPlayers);
   const timeoutDetectives = timeoutPlayers.filter((p) => p.role === 'detective');

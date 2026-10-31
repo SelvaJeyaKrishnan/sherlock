@@ -1,6 +1,8 @@
+const CACHE_KEY = Date.now();
 for (const modulePath of ['/vendor/three.module.js', './world-layout.js', './world3d.js', './app.js']) {
-  try { await import(modulePath); }
-  catch (error) {
+  try {
+    await import(`${modulePath}?v=${CACHE_KEY}`);
+  } catch (error) {
     let responseInfo = '';
     try {
       const response = await fetch(modulePath, { cache: 'no-store' });
@@ -12,3 +14,4 @@ for (const modulePath of ['/vendor/three.module.js', './world-layout.js', './wor
     break;
   }
 }
+console.log('[SHERLOCK] Modules loaded.');

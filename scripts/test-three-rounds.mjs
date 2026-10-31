@@ -112,6 +112,7 @@ try {
   // Four players unlock the hidden culprit and unanimous-capture twist.
   Math.random = () => 0;
   const party = newRoom('PARTY1', 'Inspector');
+  party.room.mode = 'deduction';
   const partyPlayers = [party.player, addPlayer(party.room, 'Irene'), addPlayer(party.room, 'Lestrade'), addPlayer(party.room, 'Moriarty')];
   readyAll(party.room, partyPlayers);
   assert.equal(party.room.mode, 'deduction');
@@ -138,19 +139,21 @@ try {
   act(party.room, detectives[1], 'trap', { mechanism: 'valve' });
   act(party.room, detectives[2], 'trap', { mechanism: 'key' });
   assert.equal(party.room.culpritCaught, true, 'The coordinated trap captures the unanimously identified culprit.');
-  assert.equal(culprit.eliminated, true);
-  assert.equal(publicRoom(party.room, detectives[0]).room.activeCount, 3);
+  assert.equal(culprit.captured, true, 'The culprit is marked captured.');
+  assert.equal(culprit.eliminated, false, 'The culprit is not permanently eliminated.');
   assert.equal(publicRoom(party.room, detectives[0]).room.players.find((p) => p.id === culprit.id).revealedRole, 'culprit');
   assert.equal(doAction(party.room, culprit, { action: 'sabotage' }).ok, false, 'A captured culprit can no longer interfere.');
   party.room.missions.telegraph.done = true;
   party.room.phase = 'reunion';
+  culprit.x = 484; culprit.y = 552;
   for (const detective of detectives) { detective.x = 484; detective.y = 552; }
   act(party.room, detectives[0], 'interact');
-  assert.equal(party.room.phase, 'results', 'The remaining team must still reunite and solve the case after catching the culprit.');
+  assert.equal(party.room.phase, 'results', 'The team and captured culprit must reunite and solve the case after catching the culprit.');
   assert.equal(party.room.result.caseSolved, true);
 
   // A unanimous wrong suspect does not remove an innocent player.
   const wrong = newRoom('WRONG1', 'Inspector');
+  wrong.room.mode = 'deduction';
   const wrongPlayers = [wrong.player, addPlayer(wrong.room, 'Irene'), addPlayer(wrong.room, 'Lestrade'), addPlayer(wrong.room, 'Moriarty')];
   readyAll(wrong.room, wrongPlayers);
   const wrongCulprit = wrongPlayers.find((player) => player.role === 'culprit');

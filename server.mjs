@@ -27,7 +27,7 @@ function sendJson(res, status, data) {
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'no-referrer',
     'X-Frame-Options': 'DENY',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+    'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   });
   res.end(JSON.stringify(data));
@@ -102,7 +102,7 @@ const server = http.createServer(async (req, res) => {
       if (relative.startsWith('..')) return sendJson(res, 403, { error: 'Not found.' });
       try {
         const data = await readFile(join(PUBLIC, relative));
-        res.writeHead(200, { 'Content-Type': contentTypes[extname(relative)] || 'application/octet-stream', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'X-Frame-Options': 'DENY', 'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'", 'Permissions-Policy': 'camera=(), microphone=(), geolocation=()' });
+        res.writeHead(200, { 'Content-Type': contentTypes[extname(relative)] || 'application/octet-stream', 'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'X-Frame-Options': 'DENY', 'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'", 'Permissions-Policy': 'camera=(), microphone=(), geolocation=()' });
         return res.end(data);
       } catch {
         return sendJson(res, 404, { error: 'Not found.' });
