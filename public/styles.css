@@ -284,18 +284,18 @@ button { color: inherit; }
 /* Centered Refined Dark Menu Panel (AAA Victorian) */
 .cinematic-menu-card {
   position: relative;
-  width: min(400px, 100%);
-  margin: 12px auto 0;
-  padding: 16px 20px 14px;
+  width: min(420px, 100%);
+  margin: 14px auto 0;
+  padding: 20px 22px 18px;
   border: 1px solid rgba(201, 164, 92, 0.42);
   border-radius: 4px;
-  background: rgba(10, 16, 24, 0.86);
+  background: rgba(10, 16, 24, 0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(201, 164, 92, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
   animation: menuCardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .cinematic-menu-card::before {
@@ -314,18 +314,24 @@ button { color: inherit; }
 
 .button--menu-primary {
   min-height: 50px;
+  width: 100%;
+  padding: 12px 20px;
+  box-sizing: border-box;
   font-family: 'Cinzel', serif;
   font-size: 13px;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
   background: linear-gradient(180deg, #f5dba0 0%, #d8ac54 50%, #b38228 100%);
   color: #090e15;
-  border: 1px solid #ffd782;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 28px rgba(216, 172, 84, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 1.5px solid #ffd782;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 24px rgba(216, 172, 84, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   gap: 10px;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, filter 0.2s ease;
 }
@@ -340,26 +346,33 @@ button { color: inherit; }
 }
 
 .button--menu-item {
-  min-height: 46px;
+  min-height: 50px;
+  width: 100%;
+  padding: 12px 20px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
   font-family: 'Cinzel', serif;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.16em;
-  background: rgba(14, 21, 30, 0.82);
-  border: 1px solid rgba(201, 164, 92, 0.45);
+  white-space: nowrap;
+  background: rgba(14, 21, 32, 0.88);
+  border: 1.5px solid rgba(201, 164, 92, 0.55);
+  border-radius: 4px;
   color: #f0e2c8;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 .button--menu-item:hover {
   transform: translateY(-1px);
   border-color: var(--gold-bright, #f4d389);
   color: var(--gold-bright, #f4d389);
-  background: rgba(22, 32, 46, 0.92);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 16px rgba(201, 164, 92, 0.2);
+  background: rgba(22, 32, 48, 0.95);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 20px rgba(201, 164, 92, 0.25);
 }
 .button--menu-item:active {
   transform: translateY(0.5px);
@@ -587,12 +600,16 @@ button { color: inherit; }
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
 }
 .hero__intro {
-  margin: 4px auto 0;
-  max-width: 520px;
-  color: rgba(180, 192, 204, 0.85);
-  font-size: 12.5px;
-  line-height: 1.42;
-  letter-spacing: 0.03em;
+  margin: 6px auto 0;
+  max-width: 540px;
+  color: #dfd6c5;
+  font-family: var(--sans, 'Inter', -apple-system, sans-serif);
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
 }
 
 .welcome-action-group {
@@ -696,6 +713,22 @@ button { color: inherit; }
 }
 .text-back:hover {
   color: var(--gold-bright);
+}
+
+.entry-step-card .name-instruction {
+  margin: 0 0 18px;
+  color: #c4b69d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#identity-error {
+  min-height: 20px;
+  margin: 8px 0 16px;
+  color: var(--red-bright, #ff6b6b);
+  font-size: 12px;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 .entry-step-card label, .room-entry-card label, .chat-form label {
@@ -6366,10 +6399,10 @@ body.hide-control-hints .desktop-controls-legend {
   .welcome-screen { padding: max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); }
   .title-main { font-size: 32px; line-height: 1.05; padding-top: 2px; }
   .title-sub { font-size: 11px; letter-spacing: 0.2em; }
-  .hero__intro { font-size: 11px; max-width: 320px; line-height: 1.35; margin: 2px auto 0; }
-  .cinematic-menu-card { margin: 8px auto 0; padding: 12px 14px 10px; gap: 6px; }
+  .hero__intro { font-size: 12px; max-width: 340px; line-height: 1.45; margin: 4px auto 0; color: #ded6c5; }
+  .cinematic-menu-card { margin: 10px auto 0; padding: 16px 16px 14px; gap: 12px; }
   .button--menu-primary { min-height: 48px; font-size: 12px; }
-  .button--menu-item { min-height: 40px; font-size: 11px; }
+  .button--menu-item { min-height: 48px; font-size: 11.5px; }
   .code-display-row { flex-wrap: wrap; justify-content: center; text-align: center; }
   .code-value-wrap { align-items: center; }
   .button--copy-code { width: 100%; justify-content: center; }

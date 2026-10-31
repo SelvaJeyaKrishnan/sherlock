@@ -472,7 +472,7 @@ function showIdentity() {
 function continueFromIdentity() {
   const name = $('player-name').value.trim();
   if (name.length < 2 || name.length > 18 || /[<>\u0000-\u001f]/.test(name)) {
-    $('identity-error').textContent = 'Enter a detective name of 2–18 characters. Avoid angle brackets or control characters.';
+    $('identity-error').textContent = 'Enter a detective name (2–18 characters). Avoid angle brackets or control characters.';
     $('player-name').focus();
     return;
   }
@@ -2959,6 +2959,7 @@ function initPauseAndSettingsMenu() {
 
   $('room-back').addEventListener('click', showIdentity);
   $('player-name').addEventListener('keydown', (event) => { if (event.key === 'Enter') continueFromIdentity(); });
+  $('player-name').addEventListener('input', () => { $('identity-error').textContent = ''; });
   initPauseAndSettingsMenu();
   const handleSkipOrClose = (e) => {
     if (e) { e.preventDefault(); e.stopPropagation(); }
