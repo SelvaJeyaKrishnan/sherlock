@@ -4371,9 +4371,10 @@ export function createTitleWorld(canvas, options = {}) {
     mistPlanes.push({ mesh: plane, baseZ: mz, seed: Math.abs(mz) * 2.3 });
   }
 
-  // Foreground Detective Silhouette (Commanding presence)
+  // Foreground Detective Silhouette (Refined atmospheric proportion)
   const detective = createForegroundDetective();
-  detective.position.set(0, 0, 1.82);
+  detective.scale.set(0.72, 0.72, 0.72);
+  detective.position.set(0, 0, 0.6);
   detective.rotation.y = Math.PI; // Facing down the street with back to camera
   scene.add(detective);
 
@@ -4385,7 +4386,7 @@ export function createTitleWorld(canvas, options = {}) {
 
   // Soft amber personal gaslamp bounce under detective
   const detLanternLight = new THREE.PointLight(0xffcd7a, 0.9, 3.6, 2);
-  detLanternLight.position.set(-0.45, 1.1, 1.7);
+  detLanternLight.position.set(-0.35, 0.8, 0.5);
   scene.add(detLanternLight);
 
   // Rain
